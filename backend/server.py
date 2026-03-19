@@ -209,10 +209,10 @@ DISCOUNT_CODES = {
 PRODUCTS = {
     "unflavored-collagen": Product(
         id="unflavored-collagen",
-        name="Grass-Fed Collagen Peptides",
+        name="Grass-Fed Hydrolyzed Collagen Peptides",
         slug="unflavored-collagen",
-        tagline="The easiest daily collagen ritual — stir, sip, stay consistent.",
-        description="Pure, unflavored collagen peptides sourced from grass-fed, pasture-raised bovine hide. Our hydrolyzed formula dissolves instantly in any beverage, hot or cold, making it effortless to add to your daily routine.",
+        tagline="Unlock Elasticity From the Inside Out",
+        description="100% pure, unflavored Grass-Fed Bovine Collagen Peptides (Types 1 & 3). Your essential daily building block to restore radiant skin, thicker hair, and flexible joints. Because your body produces less collagen every year after 20, daily supplementation bridges that gap with highly absorbable peptides that integrate into your existing routine.",
         price=39.99,
         compare_at_price=49.99,
         subscription_price=31.99,
@@ -221,29 +221,31 @@ PRODUCTS = {
         ritual="Morning Glow",
         images=[],
         benefits=[
-            "Supports skin hydration & elasticity",
-            "Promotes healthy hair & nails",
-            "Supports joint & connective tissue health",
-            "Easy to mix into any beverage",
-            "Grass-fed, pasture-raised source"
+            "Restores skin's youthful bounce and hydration",
+            "Rebuilds thinning hair and strengthens brittle nails",
+            "Supports joint flexibility and tendon strength",
+            "Dissolves instantly in hot or cold beverages",
+            "100% grass-fed, pasture-raised bovine source",
+            "Types 1 & 3 collagen for maximum skin benefits"
         ],
-        ingredients=["Hydrolyzed Bovine Collagen Peptides (Types I & III)"],
+        ingredients=["Pure Bovine Hide Collagen Peptides (Types 1 & 3)"],
         how_to_use="Add one scoop (10g) to coffee, tea, smoothies, or water. Stir or blend until dissolved. Best taken daily for optimal results.",
         pairs_with=["vanilla-creamer", "chocolate-collagen"],
         faqs=[
-            {"q": "Is this collagen flavorless?", "a": "Yes! Our unflavored formula has no taste or smell, making it perfect for any drink."},
-            {"q": "How long until I see results?", "a": "Most customers notice improvements in skin hydration within 4-8 weeks of consistent daily use."},
-            {"q": "Is it keto/paleo friendly?", "a": "Yes! Our collagen is sugar-free, carb-free, and fits most dietary lifestyles."}
+            {"q": "What types of collagen are in this powder?", "a": "It contains Type 1 and Type 3 collagen, which are the most critical forms for maintaining the health and structure of your skin, muscles, and bones."},
+            {"q": "Can I mix this into hot coffee?", "a": "Absolutely. Because it is fully hydrolyzed, our collagen dissolves effortlessly in both hot and cold liquids without altering the texture or taste."},
+            {"q": "How long until I see results?", "a": "Most customers notice improvements in skin hydration within 4-8 weeks of consistent daily use. Hair and nail benefits may take 2-3 months."},
+            {"q": "Is it keto/paleo friendly?", "a": "Yes! Our collagen is sugar-free, carb-free, and fits most dietary lifestyles including keto, paleo, and Whole30."}
         ],
         reviews_count=1247,
         rating=4.9
     ),
     "vanilla-creamer": Product(
         id="vanilla-creamer",
-        name="Vanilla Collagen Creamer",
+        name="Grass-Fed Collagen Creamer (Vanilla)",
         slug="vanilla-creamer",
-        tagline="Turn your morning cup into your beauty routine.",
-        description="Upgrade your daily coffee ritual with our Vanilla Collagen Creamer. Infused with grass-fed collagen peptides, MCT oil, and smooth vanilla flavor for a creamy, satisfying addition to any hot beverage.",
+        tagline="Elevate Your Morning Routine",
+        description="A luscious, dairy-free Vanilla Collagen Creamer. Instantly upgrade your daily coffee with pure Grass-Fed Collagen Peptides for visibly plumper skin and stronger hair with every sip. Transforms your standard morning coffee into a luxurious café-style latte while supporting skin hydration and elasticity from the very first sip.",
         price=44.99,
         compare_at_price=54.99,
         subscription_price=35.99,
@@ -252,29 +254,30 @@ PRODUCTS = {
         ritual="Morning Glow",
         images=[],
         benefits=[
-            "Creamy vanilla flavor",
-            "MCT oil for sustained energy",
-            "Supports skin, hair, & nail health",
-            "Perfect for coffee lovers",
-            "No artificial sweeteners"
+            "Support skin hydration and elasticity daily",
+            "Visibly plumper skin with consistent use",
+            "Fortifies nails against breakage",
+            "Restores hair's natural shine and thickness",
+            "Rich, authentic vanilla sweetness without artificial flavors",
+            "Dairy-free and gut-friendly formula"
         ],
-        ingredients=["Grass-Fed Collagen Peptides", "MCT Oil Powder", "Acacia Fiber", "Calcium Carbonate", "Pea Protein", "Natural Vanilla Flavor"],
-        how_to_use="Add one scoop to hot coffee, tea, or warm milk. Stir vigorously or blend for best results. Enjoy daily.",
+        ingredients=["Hydrolyzed Bovine Collagen Peptides", "Natural Vanilla Extract", "MCT Oil Powder", "Acacia Fiber"],
+        how_to_use="Add one scoop to hot coffee, tea, or warm milk. Stir vigorously or use a frother for an exceptional latte-like foam. Enjoy daily.",
         pairs_with=["unflavored-collagen", "retinol-serum"],
         faqs=[
-            {"q": "Does it dissolve well in cold drinks?", "a": "It's optimized for hot beverages. For cold drinks, we recommend blending."},
-            {"q": "How sweet is it?", "a": "Lightly sweetened with natural stevia — not overly sweet, just perfectly balanced."},
-            {"q": "Can I use it as a creamer replacement?", "a": "Absolutely! It's designed to replace your regular creamer while adding collagen benefits."}
+            {"q": "Will it change the taste of my coffee?", "a": "It adds a subtle, smooth vanilla profile and a creamy texture, enhancing your coffee rather than overpowering it."},
+            {"q": "Does it blend without a frother?", "a": "Yes, our fine powder formula is designed to dissolve easily in hot liquids with just a spoon, though a frother creates an exceptional latte-like foam."},
+            {"q": "Is it dairy-free?", "a": "Yes! Our creamer is completely dairy-free and bends perfectly into any gut-healing protocol without bloating."}
         ],
         reviews_count=892,
         rating=4.8
     ),
     "chocolate-collagen": Product(
         id="chocolate-collagen",
-        name="Chocolate Collagen Peptides",
+        name="Grass-Fed Collagen Peptides Powder (Chocolate)",
         slug="chocolate-collagen",
-        tagline="Your richer, more satisfying collagen ritual.",
-        description="Indulge in your daily collagen with our decadent Chocolate Collagen Peptides. Rich cocoa flavor meets powerful collagen support for a treat you'll look forward to every day.",
+        tagline="Your Daily Collagen Boost, Now in Rich Chocolate",
+        description="Support your skin's youthful bounce and protect your joints with Types 1 and 3 Grass-Fed Collagen. Naturally flavored with premium cocoa and sweetened with Stevia for a guilt-free wellness treat. Satisfies your chocolate cravings without spiking your blood sugar or breaking your diet.",
         price=44.99,
         compare_at_price=54.99,
         subscription_price=35.99,
@@ -283,29 +286,30 @@ PRODUCTS = {
         ritual="Daily Beauty",
         images=[],
         benefits=[
-            "Rich, natural cocoa flavor",
-            "Satisfies chocolate cravings",
-            "Supports skin elasticity",
-            "Perfect for smoothies & shakes",
-            "Only 2g sugar per serving"
+            "Supports skin's youthful bounce and hydration",
+            "Smooths fine lines from the inside out",
+            "Protects and supports joint health",
+            "Satisfies chocolate cravings guilt-free",
+            "Keto-friendly and sugar-free with Stevia",
+            "Transforms water or milk into decadent hot cocoa"
         ],
-        ingredients=["Grass-Fed Collagen Peptides", "Cocoa Powder", "Acacia Fiber", "Natural Flavor", "Stevia Extract"],
-        how_to_use="Mix one scoop with 8-10oz of water, milk, or your favorite smoothie base. Blend for a creamy treat.",
+        ingredients=["Hydrolyzed Collagen Peptides (Bovine Hide)", "Cocoa Powder", "Acacia Powder", "Natural Flavor", "Sodium Chloride", "Xanthan Gum", "Stevia Extract Powder (Reb A)", "Silica"],
+        how_to_use="Mix two scoops with 8-10oz of water, milk, or your favorite smoothie base. Blend for a creamy, indulgent treat. Best enjoyed daily.",
         pairs_with=["unflavored-collagen", "sleep-cream"],
         faqs=[
-            {"q": "Is this good for hot chocolate?", "a": "Yes! Mix with warm milk for a beauty-boosting hot chocolate."},
-            {"q": "How does it taste?", "a": "Rich, authentic chocolate flavor without the guilt — our customers love it!"},
-            {"q": "Is it suitable for kids?", "a": "Consult your pediatrician, but our formula is made with clean ingredients."}
+            {"q": "Is this product keto-friendly?", "a": "Yes. It is sweetened entirely with Stevia (Reb A), making it sugar-free and perfectly suited for low-carb and ketogenic lifestyles."},
+            {"q": "How much should I take?", "a": "We recommend two scoops daily, mixed into water, milk, or a smoothie, to ensure you get the optimal clinical dose for skin and joint repair."},
+            {"q": "Does it taste like real chocolate?", "a": "Absolutely! We use premium cocoa powder for a rich, authentic chocolate experience."}
         ],
         reviews_count=634,
         rating=4.9
     ),
     "retinol-serum": Product(
         id="retinol-serum",
-        name="Retinol + Peptide Night Serum",
+        name="Retinol & Peptide Face Serum",
         slug="retinol-serum",
-        tagline="Refine texture, smooth the look of skin, support a polished complexion.",
-        description="Our advanced night serum combines retinol with powerful peptides to target fine lines, uneven texture, and dullness while you sleep. Wake up to visibly refined, radiant skin.",
+        tagline="Refine Your Texture While You Rest",
+        description="A masterful blend of smoothing Retinol and firming Hexapeptide-11. Refresh your skin's appearance overnight for a visibly polished, even complexion by morning. Suspended in nourishing phospholipids and soothing bisabolol, it delivers high-performance anti-aging benefits—reducing fine lines and improving firmness—without the harshness of traditional retinoids.",
         price=54.99,
         compare_at_price=69.99,
         subscription_price=43.99,
@@ -314,29 +318,30 @@ PRODUCTS = {
         ritual="Night Repair",
         images=[],
         benefits=[
-            "Smooths appearance of fine lines",
-            "Refines skin texture",
-            "Supports skin firmness",
-            "Lightweight, fast-absorbing",
-            "Suitable for most skin types"
+            "Visibly firms and tightens facial contours",
+            "Smooths fine lines overnight",
+            "Refines skin texture for polished complexion",
+            "Calms skin instantly—zero flaking or redness",
+            "Lightweight formula absorbs in seconds",
+            "Suitable for sensitive skin with soothing bisabolol"
         ],
-        ingredients=["Retinol (Vitamin A)", "Hexapeptide-11", "Phospholipids", "Bisabolol", "Hyaluronic Acid"],
-        how_to_use="Apply 2-3 drops to clean, dry skin at night. Follow with moisturizer. Use sunscreen the next morning. Start 2-3x weekly, increase as tolerated.",
+        ingredients=["Phospholipids", "Retinol", "Hexapeptide-11", "Bisabolol", "Hyaluronic Acid"],
+        how_to_use="Apply 2-3 drops to clean, dry skin at night. Follow with moisturizer. Use sunscreen the next morning. If new to retinol, start every other night to allow skin to acclimate.",
         pairs_with=["sleep-cream", "vanilla-creamer"],
         faqs=[
-            {"q": "Can I use this if I'm new to retinol?", "a": "Yes! Start slowly (2-3x/week) and increase as your skin adjusts."},
-            {"q": "Should I use sunscreen?", "a": "Always use SPF 30+ the day after using retinol products."},
-            {"q": "Can I use with vitamin C?", "a": "We recommend using vitamin C in the morning and retinol at night for best results."}
+            {"q": "Is this serum safe for sensitive skin?", "a": "Yes, it contains soothing bisabolol and hydrating phospholipids to buffer the retinol, making it highly tolerable even for sensitive skin seeking texture refinement."},
+            {"q": "How often should I apply the Retinol serum?", "a": "For best results, use it nightly. If you are new to retinol, start by applying it every other night to allow your skin to acclimate."},
+            {"q": "Will it rub off on my pillow?", "a": "No, the lightweight formula sinks beautifully into skin in seconds, so it won't transfer to your pillowcase."}
         ],
         reviews_count=456,
         rating=4.7
     ),
     "sleep-cream": Product(
         id="sleep-cream",
-        name="Sleep Plus Collagen Cream",
+        name="Sleep+ Night Recovery Cream",
         slug="sleep-cream",
-        tagline="Wake up to skin that feels softer, calmer, and better hydrated.",
-        description="Transform your nighttime routine with our luxurious Sleep Plus Collagen Cream. Infused with collagen, hyaluronic acid, and soothing lavender for overnight hydration and calm.",
+        tagline="Wake Up Radiant, Even on Short Rest",
+        description="A luxurious night cream infused with Bio-Identical Melatonin, Hyaluronic Acid, and Collagen to accelerate overnight skin repair. Clinically designed to work with your body's circadian rhythm to reduce trans-epidermal water loss, soothe inflammation, and improve skin elasticity while you sleep.",
         price=49.99,
         compare_at_price=64.99,
         subscription_price=39.99,
@@ -345,19 +350,20 @@ PRODUCTS = {
         ritual="Night Repair",
         images=[],
         benefits=[
-            "Deep overnight hydration",
-            "Soothing lavender aroma",
-            "Supports skin plumpness",
-            "Non-greasy formula",
-            "Calming bedtime ritual"
+            "Wake up with plump, deeply hydrated skin",
+            "Locks in 1000x its weight in moisture",
+            "Accelerates cellular renewal overnight",
+            "Fights free radical damage during sleep",
+            "Soothing lavender and avocado oil blend",
+            "Achieve glass-like luminous complexion in 14 days"
         ],
-        ingredients=["Collagen", "Hyaluronic Acid", "Avocado Oil", "Lavender Essential Oil", "Aloe Vera", "Melatonin (topical)"],
-        how_to_use="Apply generously to face and neck after cleansing. Massage gently in upward motions. Use nightly for best results.",
+        ingredients=["Purified Water", "Melatonin", "Aloe Vera Extract", "Collagen", "Hyaluronic Acid", "Avocado Oil", "Lavender Oil"],
+        how_to_use="Apply generously to face and neck after cleansing. Massage gently in upward motions. Use nightly for best results. Safe for all skin types.",
         pairs_with=["retinol-serum", "chocolate-collagen"],
         faqs=[
-            {"q": "Is this safe for sensitive skin?", "a": "Yes! Formulated with gentle, soothing ingredients suitable for sensitive skin."},
-            {"q": "Will the lavender help me sleep?", "a": "Many customers find the calming aroma helps signal relaxation before bed."},
-            {"q": "Can I use under eyes?", "a": "Yes, gently apply around the eye area avoiding direct contact with eyes."}
+            {"q": "Can I use Sleep+ every night?", "a": "Yes. Sleep+ is formulated with gentle, soothing oils and is perfectly safe for nightly use across all skin types."},
+            {"q": "Will topical melatonin make me groggy?", "a": "No. Topical application supports your skin's local circadian repair cycle without causing morning grogginess."},
+            {"q": "Will the lavender help me sleep?", "a": "Many customers find the calming aroma helps signal relaxation before bed and creates a soothing prelude to sleep."}
         ],
         reviews_count=378,
         rating=4.8

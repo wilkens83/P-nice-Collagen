@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Star, Check, Truck, Shield, ChevronDown, ChevronUp, Plus, Minus } from "lucide-react";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
+import SEO from "../components/SEO";
 
 const ProductPage = () => {
   const { slug } = useParams();
@@ -43,6 +44,45 @@ const ProductPage = () => {
 
   const pairsWithProducts = product?.pairs_with?.map(id => getProductById(id)).filter(Boolean) || [];
 
+  // SEO meta data based on product
+  const getSEOData = () => {
+    if (!product) return {};
+    
+    const seoMap = {
+      "unflavored-collagen": {
+        title: "Grass-Fed Hydrolyzed Collagen Peptides (Unflavored)",
+        description: "100% pure, unflavored Grass-Fed Bovine Collagen Peptides (Types 1 & 3). Support radiant skin, thicker hair, and flexible joints. Dissolves instantly in any beverage.",
+        keywords: "grass-fed collagen, collagen peptides, type 1 collagen, type 3 collagen, unflavored collagen, hydrolyzed collagen, skin elasticity"
+      },
+      "vanilla-creamer": {
+        title: "Grass-Fed Collagen Creamer (Vanilla) - Dairy-Free",
+        description: "Elevate your morning coffee with pure Grass-Fed Collagen Peptides. Dairy-free vanilla creamer for visibly plumper skin and stronger hair with every sip.",
+        keywords: "collagen creamer, vanilla collagen, coffee creamer collagen, dairy-free creamer, collagen coffee, grass-fed collagen"
+      },
+      "chocolate-collagen": {
+        title: "Grass-Fed Collagen Peptides Powder (Chocolate)",
+        description: "Support your skin's youthful bounce with Types 1 and 3 Grass-Fed Collagen. Premium cocoa flavor, sweetened with Stevia. Keto-friendly collagen chocolate.",
+        keywords: "chocolate collagen, collagen powder, keto collagen, collagen peptides, grass-fed collagen, chocolate protein"
+      },
+      "retinol-serum": {
+        title: "Retinol & Peptide Face Serum - Night Repair",
+        description: "Refine your skin texture overnight with smoothing Retinol and firming Hexapeptide-11. Visibly polished, even complexion by morning. Gentle formula.",
+        keywords: "retinol serum, peptide serum, night serum, anti-aging serum, face serum, fine lines, skin texture"
+      },
+      "sleep-cream": {
+        title: "Sleep+ Night Recovery Cream with Melatonin & Collagen",
+        description: "Wake up radiant with Bio-Identical Melatonin, Hyaluronic Acid, and Collagen. Accelerates overnight skin repair while you sleep. Lavender-infused.",
+        keywords: "night cream, recovery cream, melatonin cream, collagen cream, hyaluronic acid, sleep skincare, overnight repair"
+      }
+    };
+    
+    return seoMap[product.slug] || {
+      title: product.name,
+      description: product.description,
+      keywords: ""
+    };
+  };
+
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -62,8 +102,23 @@ const ProductPage = () => {
     { id: "reviews", label: `Reviews (${product.reviews_count})` },
   ];
 
+  const seoData = getSEOData();
+
   return (
     <div data-testid="product-page">
+      <SEO 
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        type="product"
+        product={product}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: product.collection, url: `/collections/${product.collection.toLowerCase().replace(/\s+/g, '-').replace('&', '')}` },
+          { name: product.name, url: `/products/${product.slug}` }
+        ]}
+      />
+      
       {/* Main Product Section */}
       <section className="py-8 md:py-16">
         <div className="max-w-[1600px] mx-auto px-6 md:px-12">

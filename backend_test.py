@@ -11,6 +11,8 @@ class PNiceAPITester:
         self.tests_run = 0
         self.tests_passed = 0
         self.cart_id = None
+        self.seo_tests_passed = 0
+        self.seo_tests_total = 0
 
     def log_test(self, name, success, details=""):
         """Log test results"""
@@ -255,6 +257,82 @@ class PNiceAPITester:
         # Reviews
         self.test_get_reviews()
 
+        # SEO Content Tests
+        self.test_seo_content()
+
+        # Cart operations
+    def test_seo_content(self):
+        """Test SEO-optimized content in products"""
+        print("\n🔍 Testing SEO Content...")
+        
+        # Test unflavored collagen SEO content
+        try:
+            response = requests.get(f"{self.base_url}/products/unflavored-collagen", timeout=10)
+            self.seo_tests_total += 1
+            
+            if response.status_code == 200:
+                product = response.json()
+                name = product.get('name', '')
+                
+                # Check for SEO-optimized name
+                if "Grass-Fed Hydrolyzed Collagen Peptides" in name:
+                    self.log_test("Unflavored Collagen SEO Name", True, f"Name: {name}")
+                    self.seo_tests_passed += 1
+                else:
+                    self.log_test("Unflavored Collagen SEO Name", False, f"Expected 'Grass-Fed Hydrolyzed Collagen Peptides' in name, got: {name}")
+                    
+                # Check SEO-optimized benefits
+                benefits = product.get('benefits', [])
+                seo_keywords = ['skin', 'hair', 'joint', 'collagen', 'hydrolyzed']
+                benefits_text = ' '.join(benefits).lower()
+                
+                self.seo_tests_total += 1
+                found_keywords = [kw for kw in seo_keywords if kw in benefits_text]
+                if len(found_keywords) >= 3:
+                    self.log_test("Unflavored Collagen SEO Benefits", True, f"Found keywords: {found_keywords}")
+                    self.seo_tests_passed += 1
+                else:
+                    self.log_test("Unflavored Collagen SEO Benefits", False, f"Only found {len(found_keywords)} SEO keywords in benefits")
+                    
+            else:
+                self.log_test("Unflavored Collagen SEO Name", False, f"Status: {response.status_code}")
+                
+        except Exception as e:
+            self.log_test("Unflavored Collagen SEO Content", False, str(e))
+        
+        # Test that collagen products are featured first
+        try:
+            response = requests.get(f"{self.base_url}/products", timeout=10)
+            self.seo_tests_total += 1
+            
+            if response.status_code == 200:
+                products = response.json()
+                collagen_products = [p for p in products if p.get('category') == 'Daily Collagen']
+                
+                if len(collagen_products) >= 3:
+                    self.log_test("Collagen Products Featured", True, f"Found {len(collagen_products)} collagen products")
+                    self.seo_tests_passed += 1
+                else:
+                    self.log_test("Collagen Products Featured", False, f"Only found {len(collagen_products)} collagen products")
+                    
+        except Exception as e:
+            self.log_test("Collagen Products Featured", False, str(e))
+        
+        # Test rituals and collections
+        try:
+            response = requests.get(f"{self.base_url}/products/ritual/morning-glow", timeout=10)
+            self.seo_tests_total += 1
+            
+            if response.status_code == 200:
+                ritual_products = response.json()
+                if len(ritual_products) > 0:
+                    self.log_test("Morning Glow Ritual Products", True, f"Found {len(ritual_products)} ritual products")
+                    self.seo_tests_passed += 1
+                else:
+                    self.log_test("Morning Glow Ritual Products", False, "No ritual products found")
+        except Exception as e:
+            self.log_test("Morning Glow Ritual Products", False, str(e))
+
         # Cart operations
         if self.test_create_cart():
             self.test_add_to_cart("unflavored-collagen")
@@ -264,6 +342,11 @@ class PNiceAPITester:
 
         # Newsletter
         self.test_newsletter_subscription()
+
+        # Print SEO test results
+        if self.seo_tests_total > 0:
+            seo_success_rate = (self.seo_tests_passed / self.seo_tests_total) * 100
+            print(f"\n🎯 SEO Tests: {self.seo_tests_passed}/{self.seo_tests_total} passed ({seo_success_rate:.1f}%)")
 
         print("\n" + "=" * 60)
         print(f"📊 Results: {self.tests_passed}/{self.tests_run} tests passed")

@@ -1,6 +1,7 @@
 import { useEffect, useState, createContext, useContext } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import axios from "axios";
 
 // Components
@@ -153,38 +154,40 @@ function App() {
   }
 
   return (
-    <CartContext.Provider value={cartValue}>
-      <div className="App min-h-screen bg-[#FFFCF8]">
-        <BrowserRouter>
-          <Routes>
-            {/* Admin Route - No Header/Footer */}
-            <Route path="/admin" element={<AdminPage />} />
-            
-            {/* Store Routes */}
-            <Route path="*" element={
-              <>
-                <Header />
-                <CartDrawer />
-                <main>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/products/:slug" element={<ProductPage />} />
-                    <Route path="/collections/:collection" element={<CollectionPage />} />
-                    <Route path="/bundles" element={<BundlesPage />} />
-                    <Route path="/cart" element={<CartPage />} />
-                    <Route path="/checkout/success" element={<CheckoutSuccess />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/faq" element={<FAQPage />} />
-                    <Route path="/science" element={<SciencePage />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </>
-            } />
-          </Routes>
-        </BrowserRouter>
-      </div>
-    </CartContext.Provider>
+    <HelmetProvider>
+      <CartContext.Provider value={cartValue}>
+        <div className="App min-h-screen bg-[#FFFCF8]">
+          <BrowserRouter>
+            <Routes>
+              {/* Admin Route - No Header/Footer */}
+              <Route path="/admin" element={<AdminPage />} />
+              
+              {/* Store Routes */}
+              <Route path="*" element={
+                <>
+                  <Header />
+                  <CartDrawer />
+                  <main>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/products/:slug" element={<ProductPage />} />
+                      <Route path="/collections/:collection" element={<CollectionPage />} />
+                      <Route path="/bundles" element={<BundlesPage />} />
+                      <Route path="/cart" element={<CartPage />} />
+                      <Route path="/checkout/success" element={<CheckoutSuccess />} />
+                      <Route path="/about" element={<AboutPage />} />
+                      <Route path="/faq" element={<FAQPage />} />
+                      <Route path="/science" element={<SciencePage />} />
+                    </Routes>
+                  </main>
+                  <Footer />
+                </>
+              } />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </CartContext.Provider>
+    </HelmetProvider>
   );
 }
 
