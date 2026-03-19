@@ -16,10 +16,12 @@ const ProductPage = () => {
   const [reviews, setReviews] = useState([]);
   const [faqOpen, setFaqOpen] = useState(null);
   const [adding, setAdding] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
     const p = products.find(p => p.slug === slug);
     setProduct(p);
+    setSelectedImage(0); // Reset image selection when product changes
     
     if (p) {
       axios.get(`${API}/reviews/${p.id}`).then(res => setReviews(res.data)).catch(() => {});
@@ -125,15 +127,39 @@ const ProductPage = () => {
           <div className="grid md:grid-cols-2 gap-8 md:gap-16">
             {/* Images */}
             <div className="space-y-4">
-              <div className="aspect-square bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center sticky top-24">
-                <span className="text-stone-400">Main Product Image</span>
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="aspect-square bg-stone-100 flex items-center justify-center cursor-pointer hover:ring-2 ring-stone-300">
-                    <span className="text-xs text-stone-400">Img {i}</span>
+              {/* Main Image */}
+              <div className="aspect-square bg-stone-50 flex items-center justify-center sticky top-24 overflow-hidden">
+                {product.images && product.images.length > 0 ? (
+                  <img 
+                    src={product.images[selectedImage]} 
+                    alt={`${product.name} - Image ${selectedImage + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center">
+                    <span className="text-stone-400">Main Product Image</span>
                   </div>
-                ))}
+                )}
+              </div>
+              {/* Thumbnail Gallery */}
+              <div className="grid grid-cols-4 gap-2">
+                {product.images && product.images.length > 0 ? (
+                  product.images.map((img, i) => (
+                    <button 
+                      key={i} 
+                      onClick={() => setSelectedImage(i)}
+                      className={`aspect-square overflow-hidden cursor-pointer transition-all ${selectedImage === i ? 'ring-2 ring-[#292524]' : 'hover:ring-2 ring-stone-300'}`}
+                    >
+                      <img src={img} alt={`${product.name} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))
+                ) : (
+                  [1, 2, 3, 4].map((i) => (
+                    <div key={i} className="aspect-square bg-stone-100 flex items-center justify-center">
+                      <span className="text-xs text-stone-400">Img {i}</span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 

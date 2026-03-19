@@ -20,9 +20,17 @@ const ProductCard = ({ product, showQuickAdd = true }) => {
     >
       {/* Image */}
       <div className="aspect-[4/5] overflow-hidden bg-stone-50 relative">
-        <div className="product-image w-full h-full transition-transform duration-700 ease-out bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center">
-          <span className="text-stone-400 text-sm">Product Image</span>
-        </div>
+        {product.images && product.images.length > 0 ? (
+          <img 
+            src={product.images[0]} 
+            alt={product.name}
+            className="product-image w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+        ) : (
+          <div className="product-image w-full h-full transition-transform duration-700 ease-out bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center">
+            <span className="text-stone-400 text-sm">Product Image</span>
+          </div>
+        )}
         {product.compare_at_price && (
           <span className="absolute top-3 left-3 bg-[#7A8B69] text-white text-xs px-2 py-1 uppercase tracking-wider">
             Save ${(product.compare_at_price - product.price).toFixed(0)}

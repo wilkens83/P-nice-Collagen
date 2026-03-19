@@ -284,7 +284,12 @@ PRODUCTS = {
         category="Daily Collagen",
         collection="Daily Collagen Rituals",
         ritual="Daily Beauty",
-        images=[],
+        images=[
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/7s5sg7ln_1773939848934-generated-label-image-0.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/rrji6j95_1773939848972-generated-label-image-1.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/ddahly8a_1773939848974-generated-label-image-2.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/4hd9ymjr_4a75b70ac9c62c3c39640c092a1a22669efd5c0d-672x921.png"
+        ],
         benefits=[
             "Supports skin's youthful bounce and hydration",
             "Smooths fine lines from the inside out",
