@@ -1,0 +1,122 @@
+{
+  "brand_identity": {
+    "name": "P-Nice",
+    "positioning": "Collagen for the polished daily routine",
+    "target_audience": "Wellness-conscious women (25-45) who value aesthetics and routine",
+    "mood": "Soft Luxury, Refined, Trustworthy, Minimalist",
+    "design_archetype": "Organic & Earthy (Dawn Theme Variant)"
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Playfair Display, serif",
+      "weights": ["400", "600"],
+      "usage": "All section titles, hero text, and product names. Use tight tracking.",
+      "styles": "italic for emphasis words"
+    },
+    "body": {
+      "font_family": "DM Sans, sans-serif",
+      "weights": ["400", "500", "700"],
+      "usage": "Product descriptions, UI elements, navigation, buttons"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-7xl tracking-tight leading-tight",
+      "h2": "text-4xl md:text-5xl tracking-tight",
+      "h3": "text-2xl md:text-3xl font-normal",
+      "body_lg": "text-lg leading-relaxed",
+      "body_base": "text-base leading-relaxed text-muted-foreground"
+    }
+  },
+  "colors": {
+    "palette": {
+      "background": "#FFFCF8",
+      "foreground": "#292524",
+      "primary": "#292524",
+      "primary_foreground": "#FAFAFA",
+      "secondary": "#F5F0EB",
+      "secondary_foreground": "#292524",
+      "accent": "#E6DCD3",
+      "muted": "#F5F5F5",
+      "border": "#E6E6E6",
+      "success": "#7A8B69",
+      "highlight": "#D4AF37"
+    },
+    "usage": {
+      "body_bg": "bg-[#FFFCF8]",
+      "text_primary": "text-[#292524]",
+      "text_secondary": "text-[#78716c]",
+      "buttons": "bg-[#292524] text-white hover:bg-[#44403c]",
+      "sections": "Alternating between #FFFCF8 and #F5F0EB (Soft Beige)"
+    }
+  },
+  "layout_strategy": {
+    "container": "max-w-[1600px] mx-auto px-6 md:px-12",
+    "spacing": {
+      "section_gap": "py-24 md:py-32",
+      "element_gap": "gap-8"
+    },
+    "grid_system": "Use 'Bento Mode A' for lifestyle sections, 'Simple Grid' for products",
+    "dawn_specifics": {
+      "product_cards": "No shadow by default, 1px border border-stone-200, minimalist layout. Image takes 70% of card height.",
+      "hero": "Split screen (Text Left, Image Right) OR Full width banner with centered text overlay. For P-Nice, use Split Screen for trust.",
+      "buttons": "Sharp corners or rounded-sm (2px). Uppercase text tracking-widest text-xs or sm."
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "rounded-none px-8 py-4 bg-primary text-primary-foreground uppercase tracking-widest text-xs font-bold hover:opacity-90 transition-opacity",
+      "secondary": "rounded-none px-8 py-4 border border-primary text-primary bg-transparent uppercase tracking-widest text-xs font-bold hover:bg-primary hover:text-white transition-colors"
+    },
+    "cards": {
+      "product": "group relative flex flex-col bg-white border border-stone-100 hover:border-stone-300 transition-colors",
+      "image_container": "aspect-[4/5] overflow-hidden bg-stone-50",
+      "image_behavior": "object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
+    },
+    "navigation": {
+      "style": "Sticky, glassmorphism (backdrop-blur-md bg-white/80), 1px bottom border border-stone-100",
+      "links": "text-sm uppercase tracking-widest font-medium hover:text-stone-500 transition-colors"
+    }
+  },
+  "visual_enhancers": {
+    "gradients": "None. Use solid soft colors.",
+    "shadows": "Very subtle ambient shadows only for floating elements (Cart, Popups). shadow-[0_4px_20px_rgba(0,0,0,0.05)]",
+    "borders": "Delicate 1px borders in #E6E6E6. Use dividing lines between grid items (Dawn style).",
+    "icons": "Phosphor Icons (Light weight) or Lucide (Stroke 1.5px)",
+    "micro_interactions": {
+      "hover": "Images zoom slightly (scale-105). Buttons invert colors.",
+      "scroll": "Fade-in up for text elements."
+    }
+  },
+  "image_urls": {
+    "hero": {
+      "url": "https://images.unsplash.com/photo-1552650272-b8a34e21bc4b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzF8MHwxfHNlYXJjaHwzfHxtb3JuaW5nJTIwd2VsbG5lc3MlMjByb3V0aW5lJTIwd29tYW4lMjBhZXN0aGV0aWN8ZW58MHx8fHwxNzczOTE3MjIyfDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Woman stretching in morning light",
+      "usage": "Hero Section Main Image"
+    },
+    "lifestyle": {
+      "morning_ritual": "https://images.unsplash.com/photo-1713201744207-3afbef9f723c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzF8MHwxfHNlYXJjaHw0fHxtb3JuaW5nJTIwd2VsbG5lc3MlMjByb3V0aW5lJTIwd29tYW4lMjBhZXN0aGV0aWN8ZW58MHx8fHwxNzczOTE3MjIyfDA&ixlib=rb-4.1.0&q=85",
+      "wellness_moment": "https://images.unsplash.com/photo-1669998761789-cc7ebf86e15f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzF8MHwxfHNlYXJjaHwxfHxtb3JuaW5nJTIwd2VsbG5lc3MlMjByb3V0aW5lJTIwd29tYW4lMjBhZXN0aGV0aWN8ZW58MHx8fHwxNzczOTE3MjIyfDA&ixlib=rb-4.1.0&q=85"
+    },
+    "products": {
+      "texture_powder": "https://images.unsplash.com/photo-1704650312191-005ab02786f5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwyfHxjb2xsYWdlbiUyMHBvd2RlciUyMHRleHR1cmUlMjBzcG9vbiUyMGFlc3RoZXRpY3xlbnwwfHx8fDE3NzM5MTcyMjN8MA&ixlib=rb-4.1.0&q=85",
+      "jar_shot": "https://images.unsplash.com/photo-1704650311298-4d6915d34c64?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwzfHxjb2xsYWdlbiUyMHBvd2RlciUyMHRleHR1cmUlMjBzcG9vbiUyMGFlc3RoZXRpY3xlbnwwfHx8fDE3NzM5MTcyMjN8MA&ixlib=rb-4.1.0&q=85",
+      "serum_bottle": "https://images.unsplash.com/photo-1741896135512-084b251887f7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwyfHxtaW5pbWFsaXN0JTIwc2tpbmNhcmUlMjBzZXJ1bSUyMGJvdHRsZSUyMGRyb3BwZXJ8ZW58MHx8fHwxNzczOTE3MjI0fDA&ixlib=rb-4.1.0&q=85"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install 'lucide-react' for icons.",
+    "Update 'tailwind.config.js' with the new color palette (Warm Ivory background).",
+    "Use 'Playfair Display' for all Headings (H1-H4) and 'DM Sans' for Body text. Import them via Google Fonts.",
+    "Create a 'Section' component that handles the max-width and standard padding (py-24).",
+    "For the 'Trust Bar', use a marquee or a simple flex row with icons and uppercase text.",
+    "The Product Page must have a 'Sticky' details section on the right while images scroll on the left (classic Shopify Dawn layout).",
+    "Cart must be a 'Slide-over' drawer from the right, not a separate page.",
+    "Use 'framer-motion' for simple fade-ins on scroll. No complex 3D.",
+    "Implement the 'Shop by Ritual' as a 3-column grid with text overlay on images."
+  ],
+  "universal_guidelines": [
+    "Do not use gradients.",
+    "Do not use rounded corners larger than 'rounded-sm' (4px) or 'rounded-md' (6px). Keep it sharp.",
+    "Always add 'data-testid' to interactive elements.",
+    "Ensure text contrast is 4.5:1 minimum."
+  ]
+}
