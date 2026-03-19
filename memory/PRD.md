@@ -91,6 +91,13 @@ Build a premium collagen e-commerce store with:
 
 ---
 
+### Date: February 2026 - Admin Price & Promotions
+- [x] Inline price editing on Products table (Price, Compare At, Subscribe columns)
+- [x] Quick price update via PATCH endpoint
+- [x] Full Promotions management tab (CRUD: create, read, update, delete, toggle)
+- [x] Promotion stats cards (Total, Active, Uses)
+- [x] Promotion form with code, type, value, min order, max uses, expiry, active toggle
+
 ### Date: February 2026 - Sleep+ Product Images
 - [x] Added 4 product images for Sleep+ Night Recovery Cream
 - [x] Updated homepage Night Repair section to display actual product thumbnails
