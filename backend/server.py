@@ -219,7 +219,12 @@ PRODUCTS = {
         category="Daily Collagen",
         collection="Daily Collagen Rituals",
         ritual="Morning Glow",
-        images=[],
+        images=[
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/s5rlaere_1773939412691-generated-label-image-0.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/zejlkqwd_1773939412689-generated-label-image-1.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/5av0gpuq_1773939412684-generated-label-image-2.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/5bmo5r6s_d9f11e327daa1e4eaae266e9f30d81032792ea74-751x682.png"
+        ],
         benefits=[
             "Restores skin's youthful bounce and hydration",
             "Rebuilds thinning hair and strengthens brittle nails",
