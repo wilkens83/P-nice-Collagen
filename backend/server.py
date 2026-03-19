@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Request, UploadFile, File, Form
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -8,11 +9,18 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional, Dict, Any
 import uuid
+import base64
 from datetime import datetime, timezone
 from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
+import hashlib
+import secrets
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Create uploads directory
+UPLOADS_DIR = ROOT_DIR / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -122,6 +130,68 @@ class PaymentTransaction(BaseModel):
     metadata: Dict[str, str] = {}
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+# ==================== ADMIN MODELS ====================
+
+class AdminLogin(BaseModel):
+    username: str
+    password: str
+
+class AdminSession(BaseModel):
+    token: str
+    created_at: str
+
+class ProductCreate(BaseModel):
+    name: str
+    slug: str
+    tagline: str
+    description: str
+    price: float
+    compare_at_price: Optional[float] = None
+    subscription_price: Optional[float] = None
+    category: str
+    collection: str
+    ritual: str
+    images: List[str] = []
+    benefits: List[str] = []
+    ingredients: List[str] = []
+    how_to_use: str = ""
+    pairs_with: List[str] = []
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    slug: Optional[str] = None
+    tagline: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    compare_at_price: Optional[float] = None
+    subscription_price: Optional[float] = None
+    category: Optional[str] = None
+    collection: Optional[str] = None
+    ritual: Optional[str] = None
+    images: Optional[List[str]] = None
+    benefits: Optional[List[str]] = None
+    ingredients: Optional[List[str]] = None
+    how_to_use: Optional[str] = None
+    pairs_with: Optional[List[str]] = None
+    in_stock: Optional[bool] = None
+
+class Customer(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    name: Optional[str] = None
+    total_orders: int = 0
+    total_spent: float = 0.0
+    last_order_date: Optional[str] = None
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    notes: str = ""
+    tags: List[str] = []
+
+# Admin credentials (in production, use proper auth)
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD_HASH = hashlib.sha256("pnice2024".encode()).hexdigest()
+admin_sessions = {}  # In-memory session store
 
 # ==================== PRODUCT DATA ====================
 
@@ -705,8 +775,272 @@ async def stripe_webhook(request: Request):
         logging.error(f"Webhook error: {e}")
         return {"received": True}
 
+# ==================== ADMIN ROUTES ====================
+
+def verify_admin_token(token: str) -> bool:
+    """Verify admin session token"""
+    if token in admin_sessions:
+        return True
+    return False
+
+@api_router.post("/admin/login")
+async def admin_login(login: AdminLogin):
+    password_hash = hashlib.sha256(login.password.encode()).hexdigest()
+    if login.username == ADMIN_USERNAME and password_hash == ADMIN_PASSWORD_HASH:
+        token = secrets.token_urlsafe(32)
+        admin_sessions[token] = {
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "username": login.username
+        }
+        return {"success": True, "token": token}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+
+@api_router.post("/admin/logout")
+async def admin_logout(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if token in admin_sessions:
+        del admin_sessions[token]
+    return {"success": True}
+
+@api_router.get("/admin/verify")
+async def admin_verify(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if verify_admin_token(token):
+        return {"valid": True}
+    raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+# Admin Products
+@api_router.get("/admin/products")
+async def admin_get_products(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    # Get products from DB, fallback to static
+    db_products = await db.products.find({}, {"_id": 0}).to_list(1000)
+    if db_products:
+        return db_products
+    return list(PRODUCTS.values())
+
+@api_router.post("/admin/products")
+async def admin_create_product(request: Request, product: ProductCreate):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    # Check if slug exists
+    existing = await db.products.find_one({"slug": product.slug})
+    if existing or product.slug in PRODUCTS:
+        raise HTTPException(status_code=400, detail="Product with this slug already exists")
+    
+    product_dict = product.model_dump()
+    product_dict["id"] = product.slug
+    product_dict["reviews_count"] = 0
+    product_dict["rating"] = 5.0
+    product_dict["in_stock"] = True
+    product_dict["faqs"] = []
+    product_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.products.insert_one(product_dict)
+    
+    # Also add to in-memory PRODUCTS dict
+    PRODUCTS[product.slug] = Product(**product_dict)
+    
+    return {"success": True, "product": product_dict}
+
+@api_router.put("/admin/products/{product_id}")
+async def admin_update_product(request: Request, product_id: str, update: ProductUpdate):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    # Update in DB
+    result = await db.products.update_one(
+        {"id": product_id},
+        {"$set": update_data}
+    )
+    
+    # Update in-memory if exists
+    if product_id in PRODUCTS:
+        for key, value in update_data.items():
+            if hasattr(PRODUCTS[product_id], key):
+                setattr(PRODUCTS[product_id], key, value)
+    
+    return {"success": True, "updated": result.modified_count > 0}
+
+@api_router.delete("/admin/products/{product_id}")
+async def admin_delete_product(request: Request, product_id: str):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    await db.products.delete_one({"id": product_id})
+    if product_id in PRODUCTS:
+        del PRODUCTS[product_id]
+    
+    return {"success": True}
+
+# Image Upload
+@api_router.post("/admin/upload")
+async def admin_upload_image(request: Request, file: UploadFile = File(...)):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    # Validate file type
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Invalid file type. Allowed: JPEG, PNG, WebP, GIF")
+    
+    # Generate unique filename
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"{uuid.uuid4()}.{ext}"
+    filepath = UPLOADS_DIR / filename
+    
+    # Save file
+    content = await file.read()
+    with open(filepath, "wb") as f:
+        f.write(content)
+    
+    # Return URL (relative path)
+    image_url = f"/api/uploads/{filename}"
+    
+    # Save to DB for tracking
+    await db.uploads.insert_one({
+        "filename": filename,
+        "original_name": file.filename,
+        "content_type": file.content_type,
+        "size": len(content),
+        "url": image_url,
+        "uploaded_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {"success": True, "url": image_url, "filename": filename}
+
+@api_router.get("/admin/uploads")
+async def admin_get_uploads(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    uploads = await db.uploads.find({}, {"_id": 0}).sort("uploaded_at", -1).to_list(100)
+    return uploads
+
+@api_router.delete("/admin/uploads/{filename}")
+async def admin_delete_upload(request: Request, filename: str):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    filepath = UPLOADS_DIR / filename
+    if filepath.exists():
+        filepath.unlink()
+    
+    await db.uploads.delete_one({"filename": filename})
+    return {"success": True}
+
+# Customers
+@api_router.get("/admin/customers")
+async def admin_get_customers(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    # Get from newsletter + orders
+    customers = []
+    
+    # Newsletter subscribers
+    subscribers = await db.newsletter.find({}, {"_id": 0}).to_list(1000)
+    for sub in subscribers:
+        customers.append({
+            "id": sub.get("email"),
+            "email": sub.get("email"),
+            "name": None,
+            "source": "newsletter",
+            "subscribed_at": sub.get("subscribed_at"),
+            "total_orders": 0,
+            "total_spent": 0
+        })
+    
+    # Payment transactions (completed)
+    transactions = await db.payment_transactions.find(
+        {"payment_status": "paid"}, {"_id": 0}
+    ).to_list(1000)
+    
+    # Aggregate by cart (email from metadata if available)
+    for tx in transactions:
+        email = tx.get("metadata", {}).get("email", f"order_{tx.get('cart_id', 'unknown')[:8]}")
+        existing = next((c for c in customers if c["email"] == email), None)
+        if existing:
+            existing["total_orders"] += 1
+            existing["total_spent"] += tx.get("amount", 0)
+        else:
+            customers.append({
+                "id": tx.get("cart_id"),
+                "email": email,
+                "name": None,
+                "source": "order",
+                "total_orders": 1,
+                "total_spent": tx.get("amount", 0),
+                "last_order_date": tx.get("created_at")
+            })
+    
+    return customers
+
+@api_router.get("/admin/orders")
+async def admin_get_orders(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    orders = await db.payment_transactions.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return orders
+
+# Dashboard Stats
+@api_router.get("/admin/stats")
+async def admin_get_stats(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    # Count products
+    db_products_count = await db.products.count_documents({})
+    total_products = db_products_count + len(PRODUCTS)
+    
+    # Count subscribers
+    total_subscribers = await db.newsletter.count_documents({})
+    
+    # Count orders and revenue
+    orders = await db.payment_transactions.find({"payment_status": "paid"}, {"_id": 0}).to_list(1000)
+    total_orders = len(orders)
+    total_revenue = sum(o.get("amount", 0) for o in orders)
+    
+    # Recent orders
+    recent_orders = await db.payment_transactions.find({}, {"_id": 0}).sort("created_at", -1).to_list(5)
+    
+    return {
+        "total_products": total_products,
+        "total_subscribers": total_subscribers,
+        "total_orders": total_orders,
+        "total_revenue": round(total_revenue, 2),
+        "recent_orders": recent_orders
+    }
+
 # Include router
 app.include_router(api_router)
+
+# Serve uploaded files
+from fastapi.responses import FileResponse
+
+@app.get("/api/uploads/{filename}")
+async def serve_upload(filename: str):
+    filepath = UPLOADS_DIR / filename
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(filepath)
 
 app.add_middleware(
     CORSMiddleware,

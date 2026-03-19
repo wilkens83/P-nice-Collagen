@@ -16,6 +16,7 @@ import CheckoutSuccess from "./pages/CheckoutSuccess";
 import AboutPage from "./pages/AboutPage";
 import FAQPage from "./pages/FAQPage";
 import SciencePage from "./pages/SciencePage";
+import AdminPage from "./pages/AdminPage";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
@@ -155,22 +156,32 @@ function App() {
     <CartContext.Provider value={cartValue}>
       <div className="App min-h-screen bg-[#FFFCF8]">
         <BrowserRouter>
-          <Header />
-          <CartDrawer />
-          <main>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/products/:slug" element={<ProductPage />} />
-              <Route path="/collections/:collection" element={<CollectionPage />} />
-              <Route path="/bundles" element={<BundlesPage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/checkout/success" element={<CheckoutSuccess />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/faq" element={<FAQPage />} />
-              <Route path="/science" element={<SciencePage />} />
-            </Routes>
-          </main>
-          <Footer />
+          <Routes>
+            {/* Admin Route - No Header/Footer */}
+            <Route path="/admin" element={<AdminPage />} />
+            
+            {/* Store Routes */}
+            <Route path="*" element={
+              <>
+                <Header />
+                <CartDrawer />
+                <main>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/products/:slug" element={<ProductPage />} />
+                    <Route path="/collections/:collection" element={<CollectionPage />} />
+                    <Route path="/bundles" element={<BundlesPage />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/checkout/success" element={<CheckoutSuccess />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/faq" element={<FAQPage />} />
+                    <Route path="/science" element={<SciencePage />} />
+                  </Routes>
+                </main>
+                <Footer />
+              </>
+            } />
+          </Routes>
         </BrowserRouter>
       </div>
     </CartContext.Provider>
