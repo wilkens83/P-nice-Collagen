@@ -176,6 +176,36 @@ class ProductUpdate(BaseModel):
     pairs_with: Optional[List[str]] = None
     in_stock: Optional[bool] = None
 
+class PromotionCreate(BaseModel):
+    code: str
+    name: str = ""
+    description: str = ""
+    discount_type: str = "percentage"  # "percentage" or "fixed"
+    discount_value: float = 10.0
+    min_order: float = 0.0
+    max_uses: Optional[int] = None
+    active: bool = True
+    expires_at: Optional[str] = None
+    applies_to: str = "all"  # "all" or "specific"
+    product_ids: List[str] = []
+
+class PromotionUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    discount_type: Optional[str] = None
+    discount_value: Optional[float] = None
+    min_order: Optional[float] = None
+    max_uses: Optional[int] = None
+    active: Optional[bool] = None
+    expires_at: Optional[str] = None
+    applies_to: Optional[str] = None
+    product_ids: Optional[List[str]] = None
+
+class QuickPriceUpdate(BaseModel):
+    price: Optional[float] = None
+    compare_at_price: Optional[float] = None
+    subscription_price: Optional[float] = None
+
 class Customer(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -914,6 +944,114 @@ async def admin_delete_product(request: Request, product_id: str):
         del PRODUCTS[product_id]
     
     return {"success": True}
+
+# Quick Price Update
+@api_router.patch("/admin/products/{product_id}/price")
+async def admin_quick_price_update(request: Request, product_id: str, update: QuickPriceUpdate):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No price fields provided")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.products.update_one({"id": product_id}, {"$set": update_data})
+    
+    if product_id in PRODUCTS:
+        for key, value in update_data.items():
+            if hasattr(PRODUCTS[product_id], key):
+                setattr(PRODUCTS[product_id], key, value)
+    
+    return {"success": True, "product_id": product_id, "updated": update_data}
+
+# ==================== PROMOTIONS CRUD ====================
+
+@api_router.get("/admin/promotions")
+async def admin_get_promotions(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    promotions = []
+    for code, promo in DISCOUNT_CODES.items():
+        promo_dict = promo.model_dump()
+        promo_dict["name"] = promo_dict.get("name", promo.code)
+        promo_dict["description"] = promo_dict.get("description", "")
+        promo_dict["applies_to"] = promo_dict.get("applies_to", "all")
+        promo_dict["product_ids"] = promo_dict.get("product_ids", [])
+        promotions.append(promo_dict)
+    return promotions
+
+@api_router.post("/admin/promotions")
+async def admin_create_promotion(request: Request, promo: PromotionCreate):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    code_upper = promo.code.upper().strip()
+    if code_upper in DISCOUNT_CODES:
+        raise HTTPException(status_code=400, detail="Promotion code already exists")
+    
+    new_discount = DiscountCode(
+        code=code_upper,
+        discount_type=promo.discount_type,
+        discount_value=promo.discount_value,
+        min_order=promo.min_order,
+        max_uses=promo.max_uses,
+        active=promo.active,
+        expires_at=promo.expires_at,
+    )
+    DISCOUNT_CODES[code_upper] = new_discount
+    
+    return {"success": True, "code": code_upper}
+
+@api_router.put("/admin/promotions/{code}")
+async def admin_update_promotion(request: Request, code: str, update: PromotionUpdate):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    code_upper = code.upper()
+    if code_upper not in DISCOUNT_CODES:
+        raise HTTPException(status_code=404, detail="Promotion not found")
+    
+    existing = DISCOUNT_CODES[code_upper]
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    
+    for key, value in update_data.items():
+        if hasattr(existing, key):
+            setattr(existing, key, value)
+    
+    return {"success": True, "code": code_upper}
+
+@api_router.delete("/admin/promotions/{code}")
+async def admin_delete_promotion(request: Request, code: str):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    code_upper = code.upper()
+    if code_upper not in DISCOUNT_CODES:
+        raise HTTPException(status_code=404, detail="Promotion not found")
+    
+    del DISCOUNT_CODES[code_upper]
+    return {"success": True}
+
+@api_router.patch("/admin/promotions/{code}/toggle")
+async def admin_toggle_promotion(request: Request, code: str):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not verify_admin_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    code_upper = code.upper()
+    if code_upper not in DISCOUNT_CODES:
+        raise HTTPException(status_code=404, detail="Promotion not found")
+    
+    DISCOUNT_CODES[code_upper].active = not DISCOUNT_CODES[code_upper].active
+    return {"success": True, "active": DISCOUNT_CODES[code_upper].active}
 
 # Image Upload
 @api_router.post("/admin/upload")
