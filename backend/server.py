@@ -257,7 +257,12 @@ PRODUCTS = {
         category="Daily Collagen",
         collection="Daily Collagen Rituals",
         ritual="Morning Glow",
-        images=[],
+        images=[
+            "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/outqb8rw_1773939631190-generated-label-image-0.jpeg",
+            "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/gbgy5u9u_1773939639277-generated-label-image-1.jpeg",
+            "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/3746g9xe_1773939631187-generated-label-image-2.jpeg",
+            "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/lftxvq8w_e884c1aa3b7fd0961d046e390697b630114f8460-596x1078.png"
+        ],
         benefits=[
             "Support skin hydration and elasticity daily",
             "Visibly plumper skin with consistent use",
