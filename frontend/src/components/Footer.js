@@ -8,7 +8,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="md:col-span-1">
-            <h2 className="text-3xl font-serif mb-4">P-Nice</h2>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/cs2qfijw_Gemini_Generated_Image_5r0re05r0re05r0r.png" 
+              alt="P-nice" 
+              className="h-12 w-auto mb-4"
+            />
             <p className="text-stone-400 text-sm leading-relaxed">
               Premium collagen rituals for the way you live, glow, and recover.
             </p>

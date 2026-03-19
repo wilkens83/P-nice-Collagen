@@ -36,7 +36,11 @@ const Header = () => {
 
           {/* Logo */}
           <Link to="/" className="flex-shrink-0" data-testid="logo-link">
-            <h1 className="text-2xl md:text-3xl font-serif tracking-tight">P-Nice</h1>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/cs2qfijw_Gemini_Generated_Image_5r0re05r0re05r0r.png" 
+              alt="P-nice" 
+              className="h-10 md:h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
