@@ -6,7 +6,7 @@ import sys
 from datetime import datetime
 
 class PNiceAPITester:
-    def __init__(self, base_url="https://polished-wellness.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://pnice-skincare.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
@@ -213,7 +213,7 @@ class PNiceAPITester:
         try:
             payload = {
                 "cart_id": self.cart_id,
-                "origin_url": "https://polished-wellness.preview.emergentagent.com"
+                "origin_url": "https://pnice-skincare.preview.emergentagent.com"
             }
             response = requests.post(
                 f"{self.base_url}/checkout/session", 
