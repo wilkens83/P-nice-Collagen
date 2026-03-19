@@ -364,7 +364,12 @@ PRODUCTS = {
         category="Skincare",
         collection="Night Repair & Skin Ritual",
         ritual="Night Repair",
-        images=[],
+        images=[
+            "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/psqs3e41_1773939148590-generated-label-image-0.jpeg",
+            "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/1r1t7zyc_1773939148597-generated-label-image-1.jpeg",
+            "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/sbcr42vw_1773939148594-generated-label-image-2.jpeg",
+            "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/i1ivjo9r_1773939148591-generated-label-image-3.jpeg"
+        ],
         benefits=[
             "Wake up with plump, deeply hydrated skin",
             "Locks in 1000x its weight in moisture",

@@ -91,6 +91,20 @@ Build a premium collagen e-commerce store with:
 
 ---
 
+### Date: February 2026 - Sleep+ Product Images
+- [x] Added 4 product images for Sleep+ Night Recovery Cream
+- [x] Updated homepage Night Repair section to display actual product thumbnails
+- [x] Updated homepage Night Repair section hero image to use product photo
+
+#### Product Image Status
+| Product | Images | Status |
+|---------|--------|--------|
+| Grass-Fed Hydrolyzed Collagen Peptides | 4 | Done |
+| Grass-Fed Collagen Creamer (Vanilla) | 0 | Pending |
+| Grass-Fed Collagen Peptides Powder (Chocolate) | 4 | Done |
+| Retinol & Peptide Face Serum | 5 | Done |
+| Sleep+ Night Recovery Cream | 4 | Done |
+
 ## Deployment Status
 ✅ **Ready to Deploy**
 - All health checks passed

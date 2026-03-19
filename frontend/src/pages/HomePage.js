@@ -282,8 +282,12 @@ const HomePage = () => {
                     to={`/products/${product.slug}`}
                     className="flex items-center gap-4 p-4 border border-stone-700 hover:border-stone-500 transition-colors"
                   >
-                    <div className="w-16 h-16 bg-stone-700 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs text-stone-500">Img</span>
+                    <div className="w-16 h-16 bg-stone-700 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {product.images && product.images.length > 0 ? (
+                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs text-stone-500">Img</span>
+                      )}
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium">{product.name}</h3>
@@ -297,8 +301,12 @@ const HomePage = () => {
                 Shop Night Repair
               </Link>
             </div>
-            <div className="aspect-square bg-gradient-to-br from-stone-700 to-stone-800 flex items-center justify-center">
-              <span className="text-stone-600">Night Repair Image</span>
+            <div className="aspect-square bg-gradient-to-br from-stone-700 to-stone-800 flex items-center justify-center overflow-hidden">
+              {skincareProducts.length > 0 && skincareProducts[0].images && skincareProducts[0].images.length > 0 ? (
+                <img src={skincareProducts[0].images[0]} alt="Night Repair Collection" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-stone-600">Night Repair Image</span>
+              )}
             </div>
           </div>
         </div>
