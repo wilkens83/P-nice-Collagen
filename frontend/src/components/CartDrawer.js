@@ -144,21 +144,31 @@ const CartDrawer = () => {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-stone-500">Subtotal</span>
-                  <span>${totals.subtotal.toFixed(2)}</span>
+                  <span>${(totals.subtotal || 0).toFixed(2)}</span>
                 </div>
+                {totals.tax > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-stone-500">Tax ({totals.tax_rate || 8}%)</span>
+                    <span>${(totals.tax || 0).toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-stone-500">Shipping</span>
-                  <span>{totals.shipping === 0 ? "FREE" : `$${totals.shipping.toFixed(2)}`}</span>
+                  <span>{totals.shipping === 0 ? "FREE" : `$${(totals.shipping || 0).toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between font-medium pt-2 border-t border-stone-100">
                   <span>Total</span>
-                  <span>${totals.total.toFixed(2)}</span>
+                  <span>${(totals.total || 0).toFixed(2)}</span>
                 </div>
               </div>
 
+              <p className="text-xs text-center text-[#7A8B69]">
+                Use code WELCOME10 for 10% off!
+              </p>
+
               {totals.subtotal < 50 && (
-                <p className="text-xs text-center text-[#7A8B69]">
-                  Add ${(50 - totals.subtotal).toFixed(2)} more for FREE shipping!
+                <p className="text-xs text-center text-stone-500">
+                  Add ${(50 - (totals.subtotal || 0)).toFixed(2)} more for FREE shipping!
                 </p>
               )}
 

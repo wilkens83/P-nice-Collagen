@@ -93,6 +93,22 @@ class Review(BaseModel):
 class CheckoutRequest(BaseModel):
     cart_id: str
     origin_url: str
+    discount_code: Optional[str] = None
+
+class DiscountCode(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    code: str
+    discount_type: str  # "percentage" or "fixed"
+    discount_value: float
+    min_order: float = 0.0
+    max_uses: Optional[int] = None
+    uses: int = 0
+    active: bool = True
+    expires_at: Optional[str] = None
+
+class ApplyDiscountRequest(BaseModel):
+    cart_id: str
+    discount_code: str
 
 class PaymentTransaction(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -108,6 +124,17 @@ class PaymentTransaction(BaseModel):
     updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 # ==================== PRODUCT DATA ====================
+
+# Tax rate (configurable - US average)
+TAX_RATE = 0.08  # 8% tax
+
+# Discount codes
+DISCOUNT_CODES = {
+    "WELCOME10": DiscountCode(code="WELCOME10", discount_type="percentage", discount_value=10, min_order=0),
+    "SAVE15": DiscountCode(code="SAVE15", discount_type="percentage", discount_value=15, min_order=50),
+    "FIRST20": DiscountCode(code="FIRST20", discount_type="percentage", discount_value=20, min_order=75),
+    "FLAT10": DiscountCode(code="FLAT10", discount_type="fixed", discount_value=10, min_order=40),
+}
 
 PRODUCTS = {
     "unflavored-collagen": Product(
@@ -444,7 +471,7 @@ async def remove_from_cart(cart_id: str, product_id: str):
     return {"success": True, "items": items}
 
 # Cart calculation helper
-def calculate_cart_total(items: List[dict]) -> dict:
+def calculate_cart_total(items: List[dict], discount_code: str = None) -> dict:
     subtotal = 0.0
     for item in items:
         product_id = item["product_id"]
@@ -456,18 +483,106 @@ def calculate_cart_total(items: List[dict]) -> dict:
             bundle = BUNDLES[product_id]
             subtotal += bundle.price * item["quantity"]
     
+    # Apply discount
+    discount_amount = 0.0
+    discount_info = None
+    if discount_code and discount_code.upper() in DISCOUNT_CODES:
+        code = DISCOUNT_CODES[discount_code.upper()]
+        if code.active and subtotal >= code.min_order:
+            if code.discount_type == "percentage":
+                discount_amount = subtotal * (code.discount_value / 100)
+            else:  # fixed
+                discount_amount = min(code.discount_value, subtotal)
+            discount_info = {
+                "code": code.code,
+                "type": code.discount_type,
+                "value": code.discount_value,
+                "amount": round(discount_amount, 2)
+            }
+    
+    subtotal_after_discount = subtotal - discount_amount
+    
+    # Calculate shipping (free over $50 after discount)
+    shipping = 0.0 if subtotal_after_discount >= 50 else 5.99
+    
+    # Calculate tax
+    tax = round(subtotal_after_discount * TAX_RATE, 2)
+    
+    # Total
+    total = subtotal_after_discount + shipping + tax
+    
     return {
         "subtotal": round(subtotal, 2),
-        "shipping": 0.0 if subtotal >= 50 else 5.99,
-        "total": round(subtotal + (0.0 if subtotal >= 50 else 5.99), 2)
+        "discount": discount_info,
+        "discount_amount": round(discount_amount, 2),
+        "subtotal_after_discount": round(subtotal_after_discount, 2),
+        "shipping": shipping,
+        "tax": tax,
+        "tax_rate": TAX_RATE * 100,
+        "total": round(total, 2)
     }
 
 @api_router.get("/cart/{cart_id}/totals")
-async def get_cart_totals(cart_id: str):
+async def get_cart_totals(cart_id: str, discount_code: str = None):
     cart = await db.carts.find_one({"id": cart_id}, {"_id": 0})
     if not cart:
         raise HTTPException(status_code=404, detail="Cart not found")
-    return calculate_cart_total(cart.get("items", []))
+    return calculate_cart_total(cart.get("items", []), discount_code)
+
+# Discount codes
+@api_router.post("/discount/validate")
+async def validate_discount(req: ApplyDiscountRequest):
+    cart = await db.carts.find_one({"id": req.cart_id}, {"_id": 0})
+    if not cart:
+        raise HTTPException(status_code=404, detail="Cart not found")
+    
+    code_upper = req.discount_code.upper()
+    if code_upper not in DISCOUNT_CODES:
+        raise HTTPException(status_code=400, detail="Invalid discount code")
+    
+    code = DISCOUNT_CODES[code_upper]
+    if not code.active:
+        raise HTTPException(status_code=400, detail="This code is no longer active")
+    
+    # Calculate subtotal
+    subtotal = 0.0
+    for item in cart.get("items", []):
+        product_id = item["product_id"]
+        if product_id in PRODUCTS:
+            product = PRODUCTS[product_id]
+            price = product.subscription_price if item.get("is_subscription") else product.price
+            subtotal += price * item["quantity"]
+        elif product_id in BUNDLES:
+            bundle = BUNDLES[product_id]
+            subtotal += bundle.price * item["quantity"]
+    
+    if subtotal < code.min_order:
+        raise HTTPException(status_code=400, detail=f"Minimum order of ${code.min_order:.2f} required for this code")
+    
+    # Calculate discount
+    if code.discount_type == "percentage":
+        discount_amount = subtotal * (code.discount_value / 100)
+        message = f"{code.discount_value}% off applied!"
+    else:
+        discount_amount = min(code.discount_value, subtotal)
+        message = f"${code.discount_value:.2f} off applied!"
+    
+    return {
+        "valid": True,
+        "code": code.code,
+        "discount_type": code.discount_type,
+        "discount_value": code.discount_value,
+        "discount_amount": round(discount_amount, 2),
+        "message": message
+    }
+
+@api_router.get("/discount/codes")
+async def get_available_codes():
+    """Return public discount codes for marketing"""
+    return [
+        {"code": "WELCOME10", "description": "10% off your first order", "min_order": 0},
+        {"code": "SAVE15", "description": "15% off orders $50+", "min_order": 50},
+    ]
 
 # Newsletter
 @api_router.post("/newsletter")
@@ -489,7 +604,7 @@ async def create_checkout_session(request: Request, checkout_req: CheckoutReques
     if not cart or not cart.get("items"):
         raise HTTPException(status_code=400, detail="Cart is empty")
     
-    totals = calculate_cart_total(cart.get("items", []))
+    totals = calculate_cart_total(cart.get("items", []), checkout_req.discount_code)
     
     # Build URLs from origin
     success_url = f"{checkout_req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
@@ -500,16 +615,25 @@ async def create_checkout_session(request: Request, checkout_req: CheckoutReques
     webhook_url = f"{host_url}api/webhook/stripe"
     stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
     
+    # Build metadata
+    metadata = {
+        "cart_id": checkout_req.cart_id,
+        "source": "pnice_checkout",
+        "subtotal": str(totals["subtotal"]),
+        "tax": str(totals["tax"]),
+        "shipping": str(totals["shipping"])
+    }
+    if checkout_req.discount_code:
+        metadata["discount_code"] = checkout_req.discount_code.upper()
+        metadata["discount_amount"] = str(totals["discount_amount"])
+    
     # Create checkout session
     checkout_request = CheckoutSessionRequest(
         amount=float(totals["total"]),
         currency="usd",
         success_url=success_url,
         cancel_url=cancel_url,
-        metadata={
-            "cart_id": checkout_req.cart_id,
-            "source": "pnice_checkout"
-        }
+        metadata=metadata
     )
     
     session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
@@ -522,7 +646,7 @@ async def create_checkout_session(request: Request, checkout_req: CheckoutReques
         currency="usd",
         status="pending",
         payment_status="initiated",
-        metadata={"cart_id": checkout_req.cart_id}
+        metadata=metadata
     )
     await db.payment_transactions.insert_one(transaction.model_dump())
     

@@ -1,37 +1,72 @@
 import { Link } from "react-router-dom";
 import { useCart, API } from "../App";
 import { useState, useEffect } from "react";
-import { Plus, Minus, Trash2, ShoppingBag, Truck, Shield, Check } from "lucide-react";
+import { Plus, Minus, Trash2, ShoppingBag, Truck, Shield, Check, Tag, X } from "lucide-react";
 import axios from "axios";
 
 const CartPage = () => {
   const { cart, updateCartItem, removeFromCart, getProductById } = useCart();
-  const [totals, setTotals] = useState({ subtotal: 0, shipping: 0, total: 0 });
+  const [totals, setTotals] = useState({ subtotal: 0, shipping: 0, tax: 0, total: 0 });
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
+  const [discountError, setDiscountError] = useState("");
+  const [applyingDiscount, setApplyingDiscount] = useState(false);
 
   useEffect(() => {
     const fetchTotals = async () => {
       if (cart.id && cart.items.length > 0) {
         try {
-          const response = await axios.get(`${API}/cart/${cart.id}/totals`);
+          let url = `${API}/cart/${cart.id}/totals`;
+          if (appliedDiscount) {
+            url += `?discount_code=${appliedDiscount.code}`;
+          }
+          const response = await axios.get(url);
           setTotals(response.data);
         } catch (e) {
           console.error("Error fetching totals:", e);
         }
       } else {
-        setTotals({ subtotal: 0, shipping: 0, total: 0 });
+        setTotals({ subtotal: 0, shipping: 0, tax: 0, total: 0 });
       }
     };
     fetchTotals();
-  }, [cart]);
+  }, [cart, appliedDiscount]);
+
+  const handleApplyDiscount = async () => {
+    if (!discountCode.trim()) return;
+    
+    setApplyingDiscount(true);
+    setDiscountError("");
+    
+    try {
+      const response = await axios.post(`${API}/discount/validate`, {
+        cart_id: cart.id,
+        discount_code: discountCode
+      });
+      setAppliedDiscount(response.data);
+      setDiscountCode("");
+    } catch (e) {
+      setDiscountError(e.response?.data?.detail || "Invalid discount code");
+    }
+    setApplyingDiscount(false);
+  };
+
+  const removeDiscount = () => {
+    setAppliedDiscount(null);
+  };
 
   const handleCheckout = async () => {
     setCheckoutLoading(true);
     try {
-      const response = await axios.post(`${API}/checkout/session`, {
+      const payload = {
         cart_id: cart.id,
         origin_url: window.location.origin
-      });
+      };
+      if (appliedDiscount) {
+        payload.discount_code = appliedDiscount.code;
+      }
+      const response = await axios.post(`${API}/checkout/session`, payload);
       window.location.href = response.data.url;
     } catch (e) {
       console.error("Checkout error:", e);
@@ -139,25 +174,75 @@ const CartPage = () => {
               <div className="bg-[#F5F0EB] p-6 sticky top-24">
                 <h2 className="text-xl font-serif mb-6">Order Summary</h2>
 
+                {/* Discount Code Input */}
+                <div className="mb-6">
+                  <label className="text-sm font-medium mb-2 block">Discount Code</label>
+                  {appliedDiscount ? (
+                    <div className="flex items-center justify-between p-3 bg-[#7A8B69]/10 border border-[#7A8B69] text-sm">
+                      <div className="flex items-center gap-2">
+                        <Tag size={16} className="text-[#7A8B69]" />
+                        <span className="font-medium">{appliedDiscount.code}</span>
+                        <span className="text-[#7A8B69]">-${appliedDiscount.discount_amount.toFixed(2)}</span>
+                      </div>
+                      <button onClick={removeDiscount} className="text-stone-500 hover:text-stone-700">
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={discountCode}
+                        onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                        placeholder="Enter code"
+                        className="flex-1 px-3 py-2 border border-stone-300 text-sm focus:outline-none focus:border-stone-500"
+                        data-testid="discount-code-input"
+                      />
+                      <button
+                        onClick={handleApplyDiscount}
+                        disabled={applyingDiscount || !discountCode.trim()}
+                        className="px-4 py-2 bg-[#292524] text-white text-sm uppercase tracking-wider hover:bg-stone-700 disabled:opacity-50"
+                        data-testid="apply-discount-btn"
+                      >
+                        {applyingDiscount ? "..." : "Apply"}
+                      </button>
+                    </div>
+                  )}
+                  {discountError && (
+                    <p className="text-red-500 text-xs mt-1">{discountError}</p>
+                  )}
+                  <p className="text-xs text-stone-500 mt-2">Try: WELCOME10, SAVE15, FIRST20</p>
+                </div>
+
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-stone-600">Subtotal</span>
-                    <span>${totals.subtotal.toFixed(2)}</span>
+                    <span>${(totals.subtotal || 0).toFixed(2)}</span>
                   </div>
+                  {totals.discount_amount > 0 && (
+                    <div className="flex justify-between text-[#7A8B69]">
+                      <span>Discount ({totals.discount?.code})</span>
+                      <span>-${(totals.discount_amount || 0).toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-stone-600">Shipping</span>
-                    <span>{totals.shipping === 0 ? "FREE" : `$${totals.shipping.toFixed(2)}`}</span>
+                    <span>{totals.shipping === 0 ? "FREE" : `$${(totals.shipping || 0).toFixed(2)}`}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-stone-600">Tax ({totals.tax_rate || 8}%)</span>
+                    <span>${(totals.tax || 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between pt-3 border-t border-stone-300 text-lg font-medium">
                     <span>Total</span>
-                    <span>${totals.total.toFixed(2)}</span>
+                    <span>${(totals.total || 0).toFixed(2)}</span>
                   </div>
                 </div>
 
-                {totals.subtotal < 50 && (
+                {(totals.subtotal_after_discount || totals.subtotal) < 50 && (
                   <div className="mt-4 p-3 bg-white border border-stone-200 text-sm">
                     <p className="text-[#7A8B69]">
-                      Add ${(50 - totals.subtotal).toFixed(2)} more for FREE shipping!
+                      Add ${(50 - (totals.subtotal_after_discount || totals.subtotal || 0)).toFixed(2)} more for FREE shipping!
                     </p>
                   </div>
                 )}
