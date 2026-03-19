@@ -326,7 +326,13 @@ PRODUCTS = {
         category="Skincare",
         collection="Night Repair & Skin Ritual",
         ritual="Night Repair",
-        images=[],
+        images=[
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/k262emva_1773939266309-generated-label-image-1.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/w5mvvoqd_1773939266303-generated-label-image-4.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/xyi6qupn_1773939266305-generated-label-image-2.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/rg2k3idb_1773939266308-generated-label-image-3.jpeg",
+            "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/va4t5rj7_1773939266312-generated-label-image-0.jpeg"
+        ],
         benefits=[
             "Visibly firms and tightens facial contours",
             "Smooths fine lines overnight",
