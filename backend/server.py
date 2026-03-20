@@ -11,7 +11,8 @@ from typing import List, Optional, Dict, Any
 import uuid
 import base64
 from datetime import datetime, timezone
-from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
+from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutStatusResponse, CheckoutSessionRequest
+import stripe as stripe_sdk
 import hashlib
 import secrets
 import jwt
@@ -779,14 +780,69 @@ async def create_checkout_session(request: Request, checkout_req: CheckoutReques
     
     totals = calculate_cart_total(cart.get("items", []), checkout_req.discount_code)
     
-    # Build URLs from origin
+    # Build URLs
     success_url = f"{checkout_req.origin_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{checkout_req.origin_url}/cart"
     
-    # Initialize Stripe
-    host_url = str(request.base_url)
-    webhook_url = f"{host_url}api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
+    # Build line items with real product details
+    stripe_sdk.api_key = stripe_api_key
+    line_items = []
+    
+    for item in cart.get("items", []):
+        product = PRODUCTS.get(item["product_id"])
+        if not product:
+            continue
+        price = product.subscription_price if item.get("is_subscription") and product.subscription_price else product.price
+        item_data = {
+            "price_data": {
+                "currency": "usd",
+                "product_data": {
+                    "name": product.name,
+                    "description": product.description[:200] if product.description else "",
+                },
+                "unit_amount": int(price * 100),
+            },
+            "quantity": item.get("quantity", 1),
+        }
+        if product.images and len(product.images) > 0:
+            item_data["price_data"]["product_data"]["images"] = [product.images[0]]
+        line_items.append(item_data)
+    
+    # Add shipping as a line item if applicable
+    if totals["shipping"] > 0:
+        line_items.append({
+            "price_data": {
+                "currency": "usd",
+                "product_data": {"name": "Shipping"},
+                "unit_amount": int(totals["shipping"] * 100),
+            },
+            "quantity": 1,
+        })
+    
+    # Add tax as a line item
+    if totals["tax"] > 0:
+        line_items.append({
+            "price_data": {
+                "currency": "usd",
+                "product_data": {"name": "Tax"},
+                "unit_amount": int(totals["tax"] * 100),
+            },
+            "quantity": 1,
+        })
+    
+    # Apply discount if present
+    discounts = []
+    if checkout_req.discount_code and totals.get("discount_amount", 0) > 0:
+        try:
+            coupon = stripe_sdk.Coupon.create(
+                amount_off=int(totals["discount_amount"] * 100),
+                currency="usd",
+                duration="once",
+                name=f"Discount: {checkout_req.discount_code.upper()}"
+            )
+            discounts = [{"coupon": coupon.id}]
+        except Exception as e:
+            logging.warning(f"Could not create Stripe coupon: {e}")
     
     # Build metadata
     shipping = checkout_req.shipping_address
@@ -798,33 +854,54 @@ async def create_checkout_session(request: Request, checkout_req: CheckoutReques
         "shipping_cost": str(totals["shipping"]),
         "ship_name": f"{shipping.get('first_name', '')} {shipping.get('last_name', '')}",
         "ship_phone": shipping.get("phone", ""),
+        "ship_address": shipping.get("address_line1", ""),
         "ship_city": shipping.get("city", ""),
         "ship_state": shipping.get("state", ""),
+        "ship_zip": shipping.get("zip_code", ""),
     }
     
     # Store customer_id if authenticated
     customer = await get_current_customer(request)
+    customer_email = None
     if customer:
         metadata["customer_id"] = customer["id"]
+        customer_email = customer.get("email")
     
     if checkout_req.discount_code:
         metadata["discount_code"] = checkout_req.discount_code.upper()
-        metadata["discount_amount"] = str(totals["discount_amount"])
+        metadata["discount_amount"] = str(totals.get("discount_amount", 0))
     
-    # Create checkout session
-    checkout_request = CheckoutSessionRequest(
-        amount=float(totals["total"]),
-        currency="usd",
-        success_url=success_url,
-        cancel_url=cancel_url,
-        metadata=metadata
-    )
+    # Build webhook URL
+    host_url = str(request.base_url)
+    webhook_url = f"{host_url}api/webhook/stripe"
+    metadata["webhook_url"] = webhook_url
     
-    session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
+    # Create Stripe checkout session directly
+    try:
+        session_params = {
+            "payment_method_types": ["card"],
+            "line_items": line_items,
+            "mode": "payment",
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+            "metadata": metadata,
+            "shipping_address_collection": {
+                "allowed_countries": ["US", "CA", "GB", "AU", "FR", "DE"]
+            },
+        }
+        if discounts:
+            session_params["discounts"] = discounts
+        if customer_email:
+            session_params["customer_email"] = customer_email
+        
+        session = stripe_sdk.checkout.Session.create(**session_params)
+    except Exception as e:
+        logging.error(f"Stripe checkout error: {e}")
+        raise HTTPException(status_code=500, detail=f"Error creating checkout: {str(e)}")
     
     # Create payment transaction record
     transaction = PaymentTransaction(
-        session_id=session.session_id,
+        session_id=session.id,
         cart_id=checkout_req.cart_id,
         amount=float(totals["total"]),
         currency="usd",
@@ -836,7 +913,7 @@ async def create_checkout_session(request: Request, checkout_req: CheckoutReques
     tx_dict["shipping_address"] = checkout_req.shipping_address
     await db.payment_transactions.insert_one(tx_dict)
     
-    return {"url": session.url, "session_id": session.session_id}
+    return {"url": session.url, "session_id": session.id}
 
 @api_router.get("/checkout/status/{session_id}")
 async def get_checkout_status(request: Request, session_id: str):
