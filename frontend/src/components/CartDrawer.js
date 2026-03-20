@@ -1,13 +1,13 @@
 import { X, Plus, Minus, ShoppingBag } from "lucide-react";
-import { useCart, API } from "../App";
-import { Link } from "react-router-dom";
+import { useCart } from "../App";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 const CartDrawer = () => {
   const { cart, cartOpen, setCartOpen, updateCartItem, removeFromCart, getProductById } = useCart();
   const [totals, setTotals] = useState({ subtotal: 0, shipping: 0, total: 0 });
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTotals = async () => {
@@ -25,19 +25,9 @@ const CartDrawer = () => {
     fetchTotals();
   }, [cart]);
 
-  const handleCheckout = async () => {
-    setCheckoutLoading(true);
-    try {
-      const response = await axios.post(`${API}/checkout/session`, {
-        cart_id: cart.id,
-        origin_url: window.location.origin
-      });
-      window.location.href = response.data.url;
-    } catch (e) {
-      console.error("Checkout error:", e);
-      alert("Error starting checkout. Please try again.");
-    }
-    setCheckoutLoading(false);
+  const handleCheckout = () => {
+    setCartOpen(false);
+    navigate("/cart");
   };
 
   if (!cartOpen) return null;
@@ -92,9 +82,13 @@ const CartDrawer = () => {
 
                   return (
                     <div key={`${item.product_id}-${item.is_subscription}`} className="flex gap-4" data-testid={`cart-item-${item.product_id}`}>
-                      {/* Product Image Placeholder */}
-                      <div className="w-20 h-20 bg-stone-100 flex-shrink-0 flex items-center justify-center">
-                        <span className="text-xs text-stone-400">Image</span>
+                      {/* Product Image */}
+                      <div className="w-20 h-20 bg-stone-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                        {product.images?.[0] ? (
+                          <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xs text-stone-400">Image</span>
+                        )}
                       </div>
 
                       <div className="flex-1">
@@ -174,11 +168,10 @@ const CartDrawer = () => {
 
               <button
                 onClick={handleCheckout}
-                disabled={checkoutLoading}
-                className="w-full btn-primary disabled:opacity-50"
+                className="w-full btn-primary"
                 data-testid="checkout-btn"
               >
-                {checkoutLoading ? "Processing..." : "Checkout"}
+                Proceed to Checkout
               </button>
 
               <Link
