@@ -91,6 +91,15 @@ Build a premium collagen e-commerce store with:
 
 ---
 
+### Date: February 2026 - Customer Accounts & Shipping
+- [x] Customer auth system (register/login with JWT)
+- [x] Account page with Profile, Shipping Address, Order History tabs
+- [x] Mandatory shipping form on cart page (address + phone required)
+- [x] Checkout validates shipping info before Stripe redirect
+- [x] Saved addresses auto-fill in cart for logged-in users
+- [x] User icon in header linking to /account
+- [x] Cart page now shows product images
+
 ### Date: February 2026 - Admin Price & Promotions
 - [x] Inline price editing on Products table (Price, Compare At, Subscribe columns)
 - [x] Quick price update via PATCH endpoint
