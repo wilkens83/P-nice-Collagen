@@ -78,17 +78,8 @@ const HomePage = () => {
               </div>
             </div>
             <div className="order-1 md:order-2">
-              <div className="aspect-[4/5] bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center relative overflow-hidden">
-                {heroProduct?.images?.[0] ? (
-                  <img src={heroProduct.images[0]} alt="Deep Sleep Recovery Cream" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-stone-500">Hero Image</span>
-                )}
-                <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur p-4">
-                  <p className="text-xs uppercase tracking-widest text-stone-500 mb-1">Hero Product</p>
-                  <p className="font-serif text-lg">Deep Sleep Recovery Cream&trade;</p>
-                  <p className="text-sm text-[#7A8B69]">From $39.99/month with Subscribe & Save</p>
-                </div>
+              <div className="aspect-[4/5] bg-[#F5F0EB] flex items-center justify-center overflow-hidden">
+                <img src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/6k1g0iob_Gemini_Generated_Image_fpwqymfpwqymfpwq.png" alt="The Polished Glow System" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
