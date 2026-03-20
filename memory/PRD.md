@@ -91,6 +91,15 @@ Build a premium collagen e-commerce store with:
 
 ---
 
+### Date: February 2026 - Polished Glow System Rebrand
+- [x] Products renamed: Polished Collagen Base, Morning Glow Creamer, Glow Treat Collagen, Night Renewal Serum, Deep Sleep Recovery Cream
+- [x] Homepage rebuilt: ritual-based selling (Morning Ritual / Daily Beauty Boost / Night Recovery)
+- [x] Hero: "Rebuild Your Skin & Glow From Within in 30 Days"
+- [x] Bundles updated: The 30-Day Glow System ($124.99), Morning Beauty Ritual Kit ($74.99), Glow Indulgence Kit ($84.99)
+- [x] Product pages: ritual step badges, emotional hooks, "How It Fits Your Ritual" section
+- [x] Reviews and social proof updated with new product names
+- [x] FAQ section with expand/collapse added to homepage
+
 ### Date: February 2026 - Customer Accounts & Shipping
 - [x] Customer auth system (register/login with JWT)
 - [x] Account page with Profile, Shipping Address, Order History tabs
