@@ -172,8 +172,10 @@ const ProductPage = () => {
               </div>
 
               {/* Title */}
+              <p className="text-xs uppercase tracking-widest text-[#D4AF37] mb-2">{product.ritual}</p>
               <h1 className="text-3xl md:text-4xl font-serif mb-2" data-testid="product-title">{product.name}</h1>
-              <p className="text-lg text-stone-600 mb-6">{product.tagline}</p>
+              <p className="text-lg text-stone-600 mb-2">{product.tagline}</p>
+              <p className="text-sm text-stone-500 mb-6 italic">Feel confident in your skin again.</p>
 
               {/* Price */}
               <div className="mb-6">
@@ -324,6 +326,12 @@ const ProductPage = () => {
                     </li>
                   ))}
                 </ul>
+                {/* Routine Integration */}
+                <div className="mt-8 p-6 bg-[#F5F0EB] border border-stone-200">
+                  <h4 className="font-serif text-lg mb-2">How It Fits Your Ritual</h4>
+                  <p className="text-sm text-stone-600">{product.how_to_use}</p>
+                  <p className="text-xs text-[#7A8B69] mt-3 uppercase tracking-wider">{product.ritual} &mdash; Part of The Polished Glow System</p>
+                </div>
               </div>
             )}
 

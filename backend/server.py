@@ -272,16 +272,16 @@ DISCOUNT_CODES = {
 PRODUCTS = {
     "unflavored-collagen": Product(
         id="unflavored-collagen",
-        name="Grass-Fed Hydrolyzed Collagen Peptides",
+        name="Polished Collagen Base\u2122",
         slug="unflavored-collagen",
-        tagline="Unlock Elasticity From the Inside Out",
-        description="100% pure, unflavored Grass-Fed Bovine Collagen Peptides (Types 1 & 3). Your essential daily building block to restore radiant skin, thicker hair, and flexible joints. Because your body produces less collagen every year after 20, daily supplementation bridges that gap with highly absorbable peptides that integrate into your existing routine.",
+        tagline="The Foundation of Your Daily Glow",
+        description="Your essential daily building block for radiant transformation. 100% pure, unflavored Grass-Fed Bovine Collagen Peptides (Types 1 & 3) that rebuild your skin, strengthen your hair, and restore confidence from within. Your body produces less collagen every year after 20 \u2014 this is how you fight back.",
         price=39.99,
         compare_at_price=49.99,
         subscription_price=31.99,
         category="Daily Collagen",
-        collection="Daily Collagen Rituals",
-        ritual="Morning Glow",
+        collection="The Polished Glow System",
+        ritual="Step 1: Foundation",
         images=[
             "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/s5rlaere_1773939412691-generated-label-image-0.jpeg",
             "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/zejlkqwd_1773939412689-generated-label-image-1.jpeg",
@@ -289,12 +289,12 @@ PRODUCTS = {
             "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/5bmo5r6s_d9f11e327daa1e4eaae266e9f30d81032792ea74-751x682.png"
         ],
         benefits=[
-            "Restores skin's youthful bounce and hydration",
-            "Rebuilds thinning hair and strengthens brittle nails",
-            "Supports joint flexibility and tendon strength",
-            "Dissolves instantly in hot or cold beverages",
+            "Rebuild your skin\u2019s youthful bounce and deep hydration",
+            "Restore thinning hair and strengthen brittle nails",
+            "Support joint flexibility and active lifestyles",
+            "Dissolves instantly in coffee, smoothies, or water",
             "100% grass-fed, pasture-raised bovine source",
-            "Types 1 & 3 collagen for maximum skin benefits"
+            "Types 1 & 3 collagen for maximum skin transformation"
         ],
         ingredients=["Pure Bovine Hide Collagen Peptides (Types 1 & 3)"],
         how_to_use="Add one scoop (10g) to coffee, tea, smoothies, or water. Stir or blend until dissolved. Best taken daily for optimal results.",
@@ -310,16 +310,16 @@ PRODUCTS = {
     ),
     "vanilla-creamer": Product(
         id="vanilla-creamer",
-        name="Grass-Fed Collagen Creamer (Vanilla)",
+        name="Morning Glow Creamer\u2122",
         slug="vanilla-creamer",
-        tagline="Elevate Your Morning Routine",
-        description="A luscious, dairy-free Vanilla Collagen Creamer. Instantly upgrade your daily coffee with pure Grass-Fed Collagen Peptides for visibly plumper skin and stronger hair with every sip. Transforms your standard morning coffee into a luxurious café-style latte while supporting skin hydration and elasticity from the very first sip.",
+        tagline="Turn Your Morning Coffee Into a Beauty Ritual",
+        description="Transform your daily coffee into a luxurious beauty moment. This dairy-free Vanilla Collagen Creamer delivers pure Grass-Fed Collagen Peptides for visibly plumper skin and stronger hair with every sip. The easiest beauty habit you\u2019ll ever build \u2014 just add to coffee, stir, and glow.",
         price=44.99,
         compare_at_price=54.99,
         subscription_price=35.99,
         category="Daily Collagen",
-        collection="Daily Collagen Rituals",
-        ritual="Morning Glow",
+        collection="The Polished Glow System",
+        ritual="Step 2: Morning Ritual",
         images=[
             "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/outqb8rw_1773939631190-generated-label-image-0.jpeg",
             "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/gbgy5u9u_1773939639277-generated-label-image-1.jpeg",
@@ -327,11 +327,11 @@ PRODUCTS = {
             "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/lftxvq8w_e884c1aa3b7fd0961d046e390697b630114f8460-596x1078.png"
         ],
         benefits=[
-            "Support skin hydration and elasticity daily",
-            "Visibly plumper skin with consistent use",
+            "Build radiant skin as part of your morning coffee",
+            "Visibly plumper, more hydrated complexion with daily use",
             "Fortifies nails against breakage",
-            "Restores hair's natural shine and thickness",
-            "Rich, authentic vanilla sweetness without artificial flavors",
+            "Restores hair\u2019s natural shine and thickness",
+            "Rich, authentic vanilla sweetness \u2014 no artificial flavors",
             "Dairy-free and gut-friendly formula"
         ],
         ingredients=["Hydrolyzed Bovine Collagen Peptides", "Natural Vanilla Extract", "MCT Oil Powder", "Acacia Fiber"],
@@ -347,16 +347,16 @@ PRODUCTS = {
     ),
     "chocolate-collagen": Product(
         id="chocolate-collagen",
-        name="Grass-Fed Collagen Peptides Powder (Chocolate)",
+        name="Glow Treat Collagen\u2122",
         slug="chocolate-collagen",
-        tagline="Your Daily Collagen Boost, Now in Rich Chocolate",
-        description="Support your skin's youthful bounce and protect your joints with Types 1 and 3 Grass-Fed Collagen. Naturally flavored with premium cocoa and sweetened with Stevia for a guilt-free wellness treat. Satisfies your chocolate cravings without spiking your blood sugar or breaking your diet.",
+        tagline="Beauty Meets Indulgence",
+        description="Turn beauty into pleasure. Support your skin\u2019s youthful bounce while satisfying your chocolate cravings \u2014 guilt-free. Types 1 and 3 Grass-Fed Collagen naturally flavored with premium cocoa and sweetened with Stevia. Your daily beauty indulgence that actually works.",
         price=44.99,
         compare_at_price=54.99,
         subscription_price=35.99,
         category="Daily Collagen",
-        collection="Daily Collagen Rituals",
-        ritual="Daily Beauty",
+        collection="The Polished Glow System",
+        ritual="Step 3: Beauty Indulgence",
         images=[
             "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/7s5sg7ln_1773939848934-generated-label-image-0.jpeg",
             "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/rrji6j95_1773939848972-generated-label-image-1.jpeg",
@@ -384,16 +384,16 @@ PRODUCTS = {
     ),
     "retinol-serum": Product(
         id="retinol-serum",
-        name="Retinol & Peptide Face Serum",
+        name="Night Renewal Serum\u2122",
         slug="retinol-serum",
-        tagline="Refine Your Texture While You Rest",
-        description="A masterful blend of smoothing Retinol and firming Hexapeptide-11. Refresh your skin's appearance overnight for a visibly polished, even complexion by morning. Suspended in nourishing phospholipids and soothing bisabolol, it delivers high-performance anti-aging benefits—reducing fine lines and improving firmness—without the harshness of traditional retinoids.",
+        tagline="Wake Up to Visibly Smoother Skin",
+        description="Your overnight transformation starts here. A masterful blend of smoothing Retinol and firming Hexapeptide-11 that refines your complexion while you sleep. Suspended in nourishing phospholipids and soothing bisabolol, it delivers high-performance anti-aging results \u2014 without the harshness of traditional retinoids. Look in the mirror and see the difference.",
         price=54.99,
         compare_at_price=69.99,
         subscription_price=43.99,
         category="Skincare",
-        collection="Night Repair & Skin Ritual",
-        ritual="Night Repair",
+        collection="Night Recovery Ritual",
+        ritual="Step 4: Night Repair",
         images=[
             "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/5vyvug9k_1773939266309-generated-label-image-1.jpeg",
             "https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/d9a26ake_1773939266303-generated-label-image-4.jpeg",
@@ -422,16 +422,16 @@ PRODUCTS = {
     ),
     "sleep-cream": Product(
         id="sleep-cream",
-        name="Sleep+ Night Recovery Cream",
+        name="Deep Sleep Recovery Cream\u2122",
         slug="sleep-cream",
-        tagline="Wake Up Radiant, Even on Short Rest",
-        description="A luxurious night cream infused with Bio-Identical Melatonin, Hyaluronic Acid, and Collagen to accelerate overnight skin repair. Clinically designed to work with your body's circadian rhythm to reduce trans-epidermal water loss, soothe inflammation, and improve skin elasticity while you sleep.",
+        tagline="Repair While You Sleep, Wake Up Radiant",
+        description="Your skin\u2019s deepest repair happens while you sleep. This luxurious night cream works with your body\u2019s natural circadian rhythm \u2014 infused with Bio-Identical Melatonin, Hyaluronic Acid, and Collagen to accelerate overnight renewal. Wake up feeling confident, radiant, and beautifully restored.",
         price=49.99,
         compare_at_price=64.99,
         subscription_price=39.99,
         category="Skincare",
-        collection="Night Repair & Skin Ritual",
-        ritual="Night Repair",
+        collection="Night Recovery Ritual",
+        ritual="Step 4: Night Repair",
         images=[
             "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/psqs3e41_1773939148590-generated-label-image-0.jpeg",
             "https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/1r1t7zyc_1773939148597-generated-label-image-1.jpeg",
@@ -460,64 +460,52 @@ PRODUCTS = {
 }
 
 BUNDLES = {
-    "morning-glow-stack": Bundle(
-        id="morning-glow-stack",
-        name="Morning Glow Stack",
-        slug="morning-glow-stack",
-        tagline="Start every day with beauty from within.",
-        description="The perfect morning duo: our Vanilla Collagen Creamer for your coffee plus Unflavored Collagen Peptides for versatile daily use.",
+    "30-day-glow-system": Bundle(
+        id="30-day-glow-system",
+        name="The 30-Day Glow System\u2122",
+        slug="30-day-glow-system",
+        tagline="Your complete skin transformation \u2014 inside and out.",
+        description="The ultimate beauty system: Polished Collagen Base\u2122 rebuilds from within, Night Renewal Serum\u2122 refines your texture, and Deep Sleep Recovery Cream\u2122 locks in overnight results. Everything you need for visibly radiant skin in 30 days.",
+        price=124.99,
+        compare_at_price=164.97,
+        savings=39.98,
+        products=["unflavored-collagen", "retinol-serum", "sleep-cream"],
+        images=[]
+    ),
+    "morning-beauty-ritual": Bundle(
+        id="morning-beauty-ritual",
+        name="Morning Beauty Ritual Kit",
+        slug="morning-beauty-ritual",
+        tagline="Start every morning glowing from within.",
+        description="Transform your morning coffee into a beauty ritual. Morning Glow Creamer\u2122 adds luxury to every sip while Polished Collagen Base\u2122 provides the essential foundation for radiant skin, stronger hair, and healthier nails.",
         price=74.99,
-        compare_at_price=94.98,
-        savings=19.99,
+        compare_at_price=84.98,
+        savings=9.99,
         products=["vanilla-creamer", "unflavored-collagen"],
         images=[]
     ),
-    "beauty-sleep-duo": Bundle(
-        id="beauty-sleep-duo",
-        name="Beauty Sleep Duo",
-        slug="beauty-sleep-duo",
-        tagline="Your complete overnight skin transformation.",
-        description="Pair our Retinol + Peptide Night Serum with Sleep Plus Collagen Cream for the ultimate nighttime beauty routine.",
-        price=89.99,
-        compare_at_price=134.98,
-        savings=44.99,
-        products=["retinol-serum", "sleep-cream"],
-        images=[]
-    ),
-    "daily-starter-kit": Bundle(
-        id="daily-starter-kit",
-        name="Daily Collagen Starter Kit",
-        slug="daily-starter-kit",
-        tagline="Everything you need to begin your collagen journey.",
-        description="Try both our Unflavored and Chocolate Collagen Peptides to discover your perfect daily ritual.",
-        price=69.99,
+    "glow-indulgence-kit": Bundle(
+        id="glow-indulgence-kit",
+        name="Glow Indulgence Kit",
+        slug="glow-indulgence-kit",
+        tagline="Beauty meets pleasure \u2014 inside and out.",
+        description="Satisfy your cravings while transforming your skin. Glow Treat Collagen\u2122 makes beauty delicious, while Night Renewal Serum\u2122 refines your complexion overnight. The perfect combination of indulgence and results.",
+        price=84.99,
         compare_at_price=99.98,
-        savings=29.99,
-        products=["unflavored-collagen", "chocolate-collagen"],
+        savings=14.99,
+        products=["chocolate-collagen", "retinol-serum"],
         images=[]
     ),
-    "glow-within-bundle": Bundle(
-        id="glow-within-bundle",
-        name="Glow From Within Bundle",
-        slug="glow-within-bundle",
-        tagline="Inside-out beauty support.",
-        description="Combine internal collagen support with topical refinement: Unflavored Collagen Peptides plus our Retinol + Peptide Serum.",
-        price=79.99,
-        compare_at_price=109.98,
-        savings=29.99,
-        products=["unflavored-collagen", "retinol-serum"],
-        images=[]
-    )
 }
 
 # Sample reviews
 SAMPLE_REVIEWS = [
-    Review(id="r1", product_id="unflavored-collagen", name="Sarah M.", rating=5, title="Game changer for my skin!", content="I've been using this for 3 months and my skin has never looked better. Dissolves perfectly in my morning coffee.", verified=True),
-    Review(id="r2", product_id="unflavored-collagen", name="Jennifer L.", rating=5, title="Finally, a collagen that works", content="After trying many brands, this is the only one I've stuck with. Great quality, no taste.", verified=True),
-    Review(id="r3", product_id="vanilla-creamer", name="Amanda R.", rating=5, title="Best morning upgrade ever", content="I look forward to my coffee every morning now. Tastes amazing and my nails are so much stronger!", verified=True),
-    Review(id="r4", product_id="vanilla-creamer", name="Michelle K.", rating=4, title="Love the taste!", content="Really creamy and the vanilla is perfect. Wish it came in a bigger size!", verified=True),
-    Review(id="r5", product_id="retinol-serum", name="Lisa T.", rating=5, title="Visible results in weeks", content="My fine lines are noticeably smoother. This serum is now a non-negotiable part of my routine.", verified=True),
-    Review(id="r6", product_id="sleep-cream", name="Rachel H.", rating=5, title="Luxurious nighttime treat", content="The lavender scent is so calming. I wake up with plump, hydrated skin every morning.", verified=True),
+    Review(id="r1", product_id="unflavored-collagen", name="Sarah M.", rating=5, title="My skin has never looked better!", content="Three months into the Polished Collagen Base and I literally glow. My morning coffee ritual changed everything.", verified=True),
+    Review(id="r2", product_id="unflavored-collagen", name="Jennifer L.", rating=5, title="Finally found my glow", content="After trying so many brands, this is the one. No taste, dissolves perfectly, and my skin is transformed.", verified=True),
+    Review(id="r3", product_id="vanilla-creamer", name="Amanda R.", rating=5, title="Morning ritual I look forward to", content="The Morning Glow Creamer turned my coffee into something magical. My nails are so much stronger too!", verified=True),
+    Review(id="r4", product_id="vanilla-creamer", name="Michelle K.", rating=4, title="Beauty in every sip", content="Tastes incredible and I can see the difference in my skin. This is self-care that actually works.", verified=True),
+    Review(id="r5", product_id="retinol-serum", name="Lisa T.", rating=5, title="Visible results in weeks", content="The Night Renewal Serum is now non-negotiable. My fine lines are visibly smoother and I feel so confident.", verified=True),
+    Review(id="r6", product_id="sleep-cream", name="Rachel H.", rating=5, title="Wake up looking radiant", content="Deep Sleep Recovery Cream is pure luxury. The lavender scent calms me and I wake up with plump, glowing skin.", verified=True),
     Review(id="r7", product_id="chocolate-collagen", name="Emily W.", rating=5, title="Dessert that's good for you!", content="This satisfies my chocolate cravings while supporting my skin. Win-win!", verified=True),
 ]
 
