@@ -263,11 +263,7 @@ const HomePage = () => {
               </Link>
             </div>
             <div className="aspect-square overflow-hidden bg-gradient-to-br from-stone-700 to-stone-800">
-              {skincareProducts[0]?.images?.[0] ? (
-                <img src={skincareProducts[0].images[0]} alt="Night Recovery Collection" className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-stone-600 flex items-center justify-center h-full">Night Repair</span>
-              )}
+              <img src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/rxepoglf_bundle1.jpg" alt="Night Recovery Collection" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
