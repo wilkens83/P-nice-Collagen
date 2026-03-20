@@ -40,7 +40,8 @@ const Header = () => {
             <img 
               src="https://customer-assets.emergentagent.com/job_polished-wellness/artifacts/cs2qfijw_Gemini_Generated_Image_5r0re05r0re05r0r.png" 
               alt="P-nice" 
-              className="h-10 md:h-12 w-auto"
+              style={{ width: 200, height: 200 }}
+              className="object-contain"
             />
           </Link>
 
