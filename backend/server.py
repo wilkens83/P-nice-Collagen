@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 import hashlib
 import secrets
+import jwt
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -102,6 +103,37 @@ class CheckoutRequest(BaseModel):
     cart_id: str
     origin_url: str
     discount_code: Optional[str] = None
+    shipping_address: Optional[Dict[str, str]] = None
+
+# ==================== CUSTOMER AUTH MODELS ====================
+
+JWT_SECRET = os.environ.get("JWT_SECRET", secrets.token_hex(32))
+
+class CustomerRegister(BaseModel):
+    email: EmailStr
+    password: str
+    first_name: str
+    last_name: str
+
+class CustomerLoginReq(BaseModel):
+    email: EmailStr
+    password: str
+
+class ShippingAddress(BaseModel):
+    first_name: str
+    last_name: str
+    address_line1: str
+    address_line2: Optional[str] = ""
+    city: str
+    state: str
+    zip_code: str
+    country: str = "US"
+    phone: str
+
+class ProfileUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone: Optional[str] = None
 
 class DiscountCode(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -732,6 +764,15 @@ async def subscribe_newsletter(subscription: NewsletterSubscription):
 # Stripe Checkout
 @api_router.post("/checkout/session")
 async def create_checkout_session(request: Request, checkout_req: CheckoutRequest):
+    # Validate shipping address is provided
+    if not checkout_req.shipping_address:
+        raise HTTPException(status_code=400, detail="Shipping address is required")
+    
+    required_fields = ["first_name", "last_name", "address_line1", "city", "state", "zip_code", "phone"]
+    for field in required_fields:
+        if not checkout_req.shipping_address.get(field):
+            raise HTTPException(status_code=400, detail=f"Shipping {field.replace('_', ' ')} is required")
+    
     cart = await db.carts.find_one({"id": checkout_req.cart_id}, {"_id": 0})
     if not cart or not cart.get("items"):
         raise HTTPException(status_code=400, detail="Cart is empty")
@@ -748,13 +789,24 @@ async def create_checkout_session(request: Request, checkout_req: CheckoutReques
     stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
     
     # Build metadata
+    shipping = checkout_req.shipping_address
     metadata = {
         "cart_id": checkout_req.cart_id,
         "source": "pnice_checkout",
         "subtotal": str(totals["subtotal"]),
         "tax": str(totals["tax"]),
-        "shipping": str(totals["shipping"])
+        "shipping_cost": str(totals["shipping"]),
+        "ship_name": f"{shipping.get('first_name', '')} {shipping.get('last_name', '')}",
+        "ship_phone": shipping.get("phone", ""),
+        "ship_city": shipping.get("city", ""),
+        "ship_state": shipping.get("state", ""),
     }
+    
+    # Store customer_id if authenticated
+    customer = await get_current_customer(request)
+    if customer:
+        metadata["customer_id"] = customer["id"]
+    
     if checkout_req.discount_code:
         metadata["discount_code"] = checkout_req.discount_code.upper()
         metadata["discount_amount"] = str(totals["discount_amount"])
@@ -780,7 +832,9 @@ async def create_checkout_session(request: Request, checkout_req: CheckoutReques
         payment_status="initiated",
         metadata=metadata
     )
-    await db.payment_transactions.insert_one(transaction.model_dump())
+    tx_dict = transaction.model_dump()
+    tx_dict["shipping_address"] = checkout_req.shipping_address
+    await db.payment_transactions.insert_one(tx_dict)
     
     return {"url": session.url, "session_id": session.session_id}
 
@@ -836,6 +890,144 @@ async def stripe_webhook(request: Request):
     except Exception as e:
         logging.error(f"Webhook error: {e}")
         return {"received": True}
+
+# ==================== CUSTOMER AUTH ROUTES ====================
+
+def create_customer_token(customer_id: str, email: str) -> str:
+    payload = {
+        "sub": customer_id,
+        "email": email,
+        "exp": datetime.now(timezone.utc).timestamp() + 86400 * 30  # 30 days
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+
+def verify_customer_token(token: str) -> Optional[dict]:
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        return payload
+    except jwt.InvalidTokenError:
+        return None
+
+async def get_current_customer(request: Request):
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if not token:
+        return None
+    payload = verify_customer_token(token)
+    if not payload:
+        return None
+    customer = await db.customer_accounts.find_one({"id": payload["sub"]}, {"_id": 0})
+    return customer
+
+@api_router.post("/auth/register")
+async def customer_register(data: CustomerRegister):
+    existing = await db.customer_accounts.find_one({"email": data.email.lower()})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    customer_id = str(uuid.uuid4())
+    password_hash = hashlib.sha256(data.password.encode()).hexdigest()
+    
+    customer = {
+        "id": customer_id,
+        "email": data.email.lower(),
+        "password_hash": password_hash,
+        "first_name": data.first_name,
+        "last_name": data.last_name,
+        "phone": "",
+        "shipping_address": None,
+        "orders": [],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.customer_accounts.insert_one(customer)
+    
+    token = create_customer_token(customer_id, data.email.lower())
+    return {
+        "token": token,
+        "customer": {
+            "id": customer_id,
+            "email": data.email.lower(),
+            "first_name": data.first_name,
+            "last_name": data.last_name,
+            "phone": "",
+            "shipping_address": None
+        }
+    }
+
+@api_router.post("/auth/login")
+async def customer_login(data: CustomerLoginReq):
+    customer = await db.customer_accounts.find_one({"email": data.email.lower()}, {"_id": 0})
+    if not customer:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    password_hash = hashlib.sha256(data.password.encode()).hexdigest()
+    if customer["password_hash"] != password_hash:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    token = create_customer_token(customer["id"], customer["email"])
+    return {
+        "token": token,
+        "customer": {
+            "id": customer["id"],
+            "email": customer["email"],
+            "first_name": customer.get("first_name", ""),
+            "last_name": customer.get("last_name", ""),
+            "phone": customer.get("phone", ""),
+            "shipping_address": customer.get("shipping_address")
+        }
+    }
+
+@api_router.get("/auth/me")
+async def customer_me(request: Request):
+    customer = await get_current_customer(request)
+    if not customer:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {
+        "id": customer["id"],
+        "email": customer["email"],
+        "first_name": customer.get("first_name", ""),
+        "last_name": customer.get("last_name", ""),
+        "phone": customer.get("phone", ""),
+        "shipping_address": customer.get("shipping_address"),
+        "created_at": customer.get("created_at")
+    }
+
+@api_router.put("/auth/profile")
+async def customer_update_profile(request: Request, update: ProfileUpdate):
+    customer = await get_current_customer(request)
+    if not customer:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    update_data = {k: v for k, v in update.model_dump().items() if v is not None}
+    if update_data:
+        await db.customer_accounts.update_one(
+            {"id": customer["id"]},
+            {"$set": update_data}
+        )
+    return {"success": True}
+
+@api_router.put("/auth/address")
+async def customer_update_address(request: Request, address: ShippingAddress):
+    customer = await get_current_customer(request)
+    if not customer:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    await db.customer_accounts.update_one(
+        {"id": customer["id"]},
+        {"$set": {"shipping_address": address.model_dump(), "phone": address.phone}}
+    )
+    return {"success": True}
+
+@api_router.get("/auth/orders")
+async def customer_orders(request: Request):
+    customer = await get_current_customer(request)
+    if not customer:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    orders = await db.payment_transactions.find(
+        {"metadata.customer_id": customer["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    return orders
 
 # ==================== ADMIN ROUTES ====================
 

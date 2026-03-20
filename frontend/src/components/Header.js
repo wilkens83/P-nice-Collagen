@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingBag, Menu, X, ChevronDown } from "lucide-react";
+import { ShoppingBag, Menu, X, ChevronDown, User } from "lucide-react";
 import { useCart } from "../App";
 
 const Header = () => {
   const { setCartOpen, cartItemCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
+  const isLoggedIn = !!localStorage.getItem("pnice_customer_token");
 
   const shopLinks = [
     { name: "All Products", href: "/collections/all" },
@@ -86,19 +87,29 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Cart Button */}
-          <button
-            onClick={() => setCartOpen(true)}
-            className="relative p-2"
-            data-testid="cart-btn"
-          >
-            <ShoppingBag size={24} />
-            {cartItemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#292524] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
-          </button>
+          {/* Account & Cart */}
+          <div className="flex items-center gap-2">
+            <Link
+              to="/account"
+              className="relative p-2 hover:text-stone-500 transition-colors"
+              data-testid="account-link"
+              title={isLoggedIn ? "My Account" : "Sign In"}
+            >
+              <User size={22} />
+            </Link>
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative p-2"
+              data-testid="cart-btn"
+            >
+              <ShoppingBag size={24} />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#292524] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}

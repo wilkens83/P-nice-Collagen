@@ -12,6 +12,28 @@ const CartPage = () => {
   const [appliedDiscount, setAppliedDiscount] = useState(null);
   const [discountError, setDiscountError] = useState("");
   const [applyingDiscount, setApplyingDiscount] = useState(false);
+  const [shippingError, setShippingError] = useState("");
+  const [shippingForm, setShippingForm] = useState({
+    first_name: "", last_name: "", address_line1: "", address_line2: "",
+    city: "", state: "", zip_code: "", country: "US", phone: ""
+  });
+
+  // Load saved address from customer account if logged in
+  useEffect(() => {
+    const loadSavedAddress = async () => {
+      const token = localStorage.getItem("pnice_customer_token");
+      if (!token) return;
+      try {
+        const res = await axios.get(`${API}/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.shipping_address) {
+          setShippingForm(res.data.shipping_address);
+        } else if (res.data.first_name) {
+          setShippingForm(f => ({ ...f, first_name: res.data.first_name, last_name: res.data.last_name, phone: res.data.phone || "" }));
+        }
+      } catch { /* not logged in or error */ }
+    };
+    loadSavedAddress();
+  }, []);
 
   useEffect(() => {
     const fetchTotals = async () => {
@@ -57,20 +79,34 @@ const CartPage = () => {
   };
 
   const handleCheckout = async () => {
+    // Validate shipping fields
+    setShippingError("");
+    const required = ["first_name", "last_name", "address_line1", "city", "state", "zip_code", "phone"];
+    const missing = required.filter(f => !shippingForm[f]?.trim());
+    if (missing.length > 0) {
+      setShippingError("Please fill in all required shipping fields including phone number.");
+      return;
+    }
+
     setCheckoutLoading(true);
     try {
       const payload = {
         cart_id: cart.id,
-        origin_url: window.location.origin
+        origin_url: window.location.origin,
+        shipping_address: shippingForm
       };
       if (appliedDiscount) {
         payload.discount_code = appliedDiscount.code;
       }
-      const response = await axios.post(`${API}/checkout/session`, payload);
+      const token = localStorage.getItem("pnice_customer_token");
+      const headers = { "Content-Type": "application/json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+      
+      const response = await axios.post(`${API}/checkout/session`, payload, { headers });
       window.location.href = response.data.url;
     } catch (e) {
       console.error("Checkout error:", e);
-      alert("Error starting checkout. Please try again.");
+      alert(e.response?.data?.detail || "Error starting checkout. Please try again.");
     }
     setCheckoutLoading(false);
   };
@@ -110,8 +146,12 @@ const CartPage = () => {
                 return (
                   <div key={`${item.product_id}-${item.is_subscription}`} className="flex gap-6 pb-6 border-b border-stone-100" data-testid={`cart-page-item-${item.product_id}`}>
                     {/* Image */}
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-stone-100 flex-shrink-0 flex items-center justify-center">
-                      <span className="text-xs text-stone-400">Image</span>
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-stone-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                      {product.images?.[0] ? (
+                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs text-stone-400">Image</span>
+                      )}
                     </div>
 
                     {/* Details */}
@@ -167,6 +207,48 @@ const CartPage = () => {
               <Link to="/collections/all" className="inline-block text-sm underline hover:no-underline">
                 Continue Shopping
               </Link>
+
+              {/* Shipping Information */}
+              <div className="mt-8 bg-white p-6 border border-stone-200" data-testid="shipping-form">
+                <div className="flex items-center gap-2 mb-4">
+                  <Truck size={20} />
+                  <h2 className="text-lg font-serif">Shipping Information</h2>
+                </div>
+                <p className="text-xs text-stone-500 mb-4">Address and phone number are mandatory for shipping.</p>
+                
+                {shippingError && <p className="text-red-500 text-sm mb-4" data-testid="shipping-error">{shippingError}</p>}
+
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <input type="text" placeholder="First Name *" value={shippingForm.first_name}
+                      onChange={(e) => setShippingForm(f => ({ ...f, first_name: e.target.value }))}
+                      className="px-3 py-2.5 border border-stone-300 text-sm focus:outline-none focus:border-[#292524]" data-testid="ship-first-name" />
+                    <input type="text" placeholder="Last Name *" value={shippingForm.last_name}
+                      onChange={(e) => setShippingForm(f => ({ ...f, last_name: e.target.value }))}
+                      className="px-3 py-2.5 border border-stone-300 text-sm focus:outline-none focus:border-[#292524]" data-testid="ship-last-name" />
+                  </div>
+                  <input type="text" placeholder="Address Line 1 *" value={shippingForm.address_line1}
+                    onChange={(e) => setShippingForm(f => ({ ...f, address_line1: e.target.value }))}
+                    className="w-full px-3 py-2.5 border border-stone-300 text-sm focus:outline-none focus:border-[#292524]" data-testid="ship-address1" />
+                  <input type="text" placeholder="Apt, suite, unit (optional)" value={shippingForm.address_line2}
+                    onChange={(e) => setShippingForm(f => ({ ...f, address_line2: e.target.value }))}
+                    className="w-full px-3 py-2.5 border border-stone-300 text-sm focus:outline-none focus:border-[#292524]" data-testid="ship-address2" />
+                  <div className="grid grid-cols-3 gap-3">
+                    <input type="text" placeholder="City *" value={shippingForm.city}
+                      onChange={(e) => setShippingForm(f => ({ ...f, city: e.target.value }))}
+                      className="px-3 py-2.5 border border-stone-300 text-sm focus:outline-none focus:border-[#292524]" data-testid="ship-city" />
+                    <input type="text" placeholder="State *" value={shippingForm.state}
+                      onChange={(e) => setShippingForm(f => ({ ...f, state: e.target.value }))}
+                      className="px-3 py-2.5 border border-stone-300 text-sm focus:outline-none focus:border-[#292524]" data-testid="ship-state" />
+                    <input type="text" placeholder="ZIP Code *" value={shippingForm.zip_code}
+                      onChange={(e) => setShippingForm(f => ({ ...f, zip_code: e.target.value }))}
+                      className="px-3 py-2.5 border border-stone-300 text-sm focus:outline-none focus:border-[#292524]" data-testid="ship-zip" />
+                  </div>
+                  <input type="tel" placeholder="Phone Number * (required for shipping)" value={shippingForm.phone}
+                    onChange={(e) => setShippingForm(f => ({ ...f, phone: e.target.value }))}
+                    className="w-full px-3 py-2.5 border border-stone-300 text-sm focus:outline-none focus:border-[#292524]" data-testid="ship-phone" />
+                </div>
+              </div>
             </div>
 
             {/* Order Summary */}

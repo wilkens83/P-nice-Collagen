@@ -18,6 +18,7 @@ import AboutPage from "./pages/AboutPage";
 import FAQPage from "./pages/FAQPage";
 import SciencePage from "./pages/SciencePage";
 import AdminPage from "./pages/AdminPage";
+import AccountPage from "./pages/AccountPage";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
@@ -178,6 +179,7 @@ function App() {
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/faq" element={<FAQPage />} />
                       <Route path="/science" element={<SciencePage />} />
+                      <Route path="/account" element={<AccountPage />} />
                     </Routes>
                   </main>
                   <Footer />
