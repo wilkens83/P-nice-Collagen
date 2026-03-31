@@ -108,7 +108,7 @@ class CheckoutRequest(BaseModel):
 
 # ==================== CUSTOMER AUTH MODELS ====================
 
-JWT_SECRET = os.environ.get("JWT_SECRET", secrets.token_hex(32))
+JWT_SECRET = os.environ.get("JWT_SECRET")
 
 class CustomerRegister(BaseModel):
     email: EmailStr
@@ -251,9 +251,9 @@ class Customer(BaseModel):
     notes: str = ""
     tags: List[str] = []
 
-# Admin credentials (in production, use proper auth)
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD_HASH = hashlib.sha256("pnice2024".encode()).hexdigest()
+# Admin credentials from environment
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
+ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH")
 admin_sessions = {}  # In-memory session store
 
 # ==================== PRODUCT DATA ====================
