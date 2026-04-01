@@ -54,17 +54,24 @@ const HomePage = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[80vh]" data-testid="hero-section" style={{ backgroundImage: 'url(https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/4ttg770b_banner.png)', backgroundSize: 'cover', backgroundPosition: 'center right' }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/60 to-transparent"></div>
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
-          <div className="flex items-center min-h-[80vh] py-12">
-            <div className="max-w-xl">
-              <p className="text-sm text-[#7A8B69] mb-3 tracking-wide">Get 15% Discount on First Order!</p>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight leading-[1.1] mb-6">
+      <section className="relative overflow-hidden" data-testid="hero-section">
+        <div className="relative min-h-[80vh]">
+          {/* Full background image */}
+          <img 
+            src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/4ttg770b_banner.png" 
+            alt="The Polished Glow System - Complete Collection" 
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Light overlay only on text area */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent md:w-1/2"></div>
+          <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 flex items-center min-h-[80vh] py-12">
+            <div className="max-w-md">
+              <p className="text-sm text-[#7A8B69] mb-3 tracking-wide font-medium">Get 15% Discount on First Order!</p>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-tight leading-[1.1] mb-6 text-[#292524]">
                 Rebuild Your Skin & Glow <em className="italic">From Within</em>
               </h1>
-              <p className="text-sm text-stone-500 mb-1">A complete collagen-powered ritual</p>
-              <p className="text-sm text-stone-500 mb-6">for stronger skin, healthier hair, and lasting confidence.</p>
+              <p className="text-sm text-stone-600 mb-1">A complete collagen-powered ritual</p>
+              <p className="text-sm text-stone-600 mb-6">for stronger skin, healthier hair, and lasting confidence.</p>
               <p className="text-lg font-serif text-[#292524] mb-8">From $31.99</p>
               <Link to="/collections/all" className="inline-block bg-[#292524] text-white px-8 py-3 text-sm uppercase tracking-widest hover:bg-stone-700 transition-colors" data-testid="shop-system-btn">
                 Shop Now
