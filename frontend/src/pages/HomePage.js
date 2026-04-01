@@ -55,7 +55,7 @@ const HomePage = () => {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden min-h-[80vh]" data-testid="hero-section" style={{ backgroundImage: 'url(https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/4ttg770b_banner.png)', backgroundSize: 'cover', backgroundPosition: 'center right' }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/60 to-transparent"></div>
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
           <div className="flex items-center min-h-[80vh] py-12">
             <div className="max-w-xl">
