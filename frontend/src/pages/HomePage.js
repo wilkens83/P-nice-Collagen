@@ -54,33 +54,29 @@ const HomePage = () => {
       />
 
       {/* Hero Section */}
-      <section className="bg-[#F5F0EB]" data-testid="hero-section">
+      <section className="bg-white relative overflow-hidden" data-testid="hero-section">
         <div className="max-w-[1600px] mx-auto px-6 md:px-12">
-          <div className="grid md:grid-cols-2 gap-8 items-center min-h-[85vh] py-16">
-            <div className="order-2 md:order-1">
-              <p className="text-sm uppercase tracking-widest text-[#7A8B69] mb-4">The Polished Glow System</p>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight leading-tight mb-6">
-                Rebuild Your Skin & Glow <em className="italic">From Within</em> in 30 Days
+          <div className="grid md:grid-cols-2 items-center min-h-[80vh] py-12">
+            {/* Left: Text */}
+            <div className="relative z-10 max-w-xl">
+              <p className="text-sm text-[#7A8B69] mb-3 tracking-wide">Get 15% Discount on First Order!</p>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight leading-[1.1] mb-6">
+                Rebuild Your Skin & Glow <em className="italic">From Within</em>
               </h1>
-              <p className="text-lg md:text-xl text-stone-600 mb-4 max-w-lg">
-                A complete collagen-powered ritual for stronger skin, healthier hair, and lasting confidence.
-              </p>
-              <p className="text-stone-500 mb-8 max-w-lg">
-                Wake up feeling radiant. Look in the mirror and see smoother, firmer skin. Feel confident without makeup.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Link to="/bundles" className="btn-primary" data-testid="shop-system-btn">
-                  Shop The Glow System
-                </Link>
-                <Link to="/collections/all" className="btn-secondary" data-testid="start-routine-btn">
-                  Start Your Routine
-                </Link>
-              </div>
+              <p className="text-sm text-stone-500 mb-1">A complete collagen-powered ritual</p>
+              <p className="text-sm text-stone-500 mb-6">for stronger skin, healthier hair, and lasting confidence.</p>
+              <p className="text-lg font-serif text-[#292524] mb-8">From $31.99</p>
+              <Link to="/collections/all" className="inline-block bg-[#292524] text-white px-8 py-3 text-sm uppercase tracking-widest hover:bg-stone-700 transition-colors" data-testid="shop-system-btn">
+                Shop Now
+              </Link>
             </div>
-            <div className="order-1 md:order-2">
-              <div className="aspect-[4/5] bg-[#F5F0EB] flex items-center justify-center overflow-hidden">
-                <img src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/9z492qjg_banner.png" alt="The Polished Glow System - Complete Collection" className="w-full h-full object-cover" />
-              </div>
+            {/* Right: Product image flowing naturally */}
+            <div className="relative h-full flex items-center justify-end">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/9z492qjg_banner.png" 
+                alt="The Polished Glow System - Complete Collection" 
+                className="w-full max-w-[650px] object-contain drop-shadow-lg" 
+              />
             </div>
           </div>
         </div>
