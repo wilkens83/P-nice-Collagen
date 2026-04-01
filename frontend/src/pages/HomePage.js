@@ -79,7 +79,7 @@ const HomePage = () => {
             </div>
             <div className="order-1 md:order-2">
               <div className="aspect-[4/5] bg-[#F5F0EB] flex items-center justify-center overflow-hidden">
-                <img src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/6k1g0iob_Gemini_Generated_Image_fpwqymfpwqymfpwq.png" alt="The Polished Glow System" className="w-full h-full object-cover" />
+                <img src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/9z492qjg_banner.png" alt="The Polished Glow System - Complete Collection" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
