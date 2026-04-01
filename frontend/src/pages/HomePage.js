@@ -55,19 +55,40 @@ const HomePage = () => {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden" data-testid="hero-section">
-        <div className="relative min-h-[80vh]">
-          {/* Full background image */}
+        {/* Mobile: stacked layout */}
+        <div className="md:hidden">
+          <div className="relative aspect-[4/3]">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/4ttg770b_banner.png" 
+              alt="The Polished Glow System - Complete Collection" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="px-6 py-10 bg-white text-center">
+            <p className="text-sm text-[#7A8B69] mb-3 tracking-wide font-medium">Get 15% Discount on First Order!</p>
+            <h1 className="text-3xl sm:text-4xl font-serif tracking-tight leading-[1.1] mb-4 text-[#292524]">
+              Rebuild Your Skin & Glow <em className="italic">From Within</em>
+            </h1>
+            <p className="text-sm text-stone-600 mb-1">A complete collagen-powered ritual</p>
+            <p className="text-sm text-stone-600 mb-5">for stronger skin, healthier hair, and lasting confidence.</p>
+            <p className="text-lg font-serif text-[#292524] mb-6">From $31.99</p>
+            <Link to="/collections/all" className="inline-block bg-[#292524] text-white px-8 py-3 text-sm uppercase tracking-widest hover:bg-stone-700 transition-colors" data-testid="shop-system-btn-mobile">
+              Shop Now
+            </Link>
+          </div>
+        </div>
+        {/* Desktop: overlay layout */}
+        <div className="hidden md:block relative min-h-[80vh]">
           <img 
             src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/4ttg770b_banner.png" 
             alt="The Polished Glow System - Complete Collection" 
             className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* Light overlay only on text area */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent md:w-1/2"></div>
-          <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10 flex items-center min-h-[80vh] py-12">
+          <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-white/80 via-white/40 to-transparent"></div>
+          <div className="max-w-[1600px] mx-auto px-12 relative z-10 flex items-center min-h-[80vh] py-12">
             <div className="max-w-md">
               <p className="text-sm text-[#7A8B69] mb-3 tracking-wide font-medium">Get 15% Discount on First Order!</p>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-tight leading-[1.1] mb-6 text-[#292524]">
+              <h1 className="text-5xl lg:text-6xl font-serif tracking-tight leading-[1.1] mb-6 text-[#292524]">
                 Rebuild Your Skin & Glow <em className="italic">From Within</em>
               </h1>
               <p className="text-sm text-stone-600 mb-1">A complete collagen-powered ritual</p>
