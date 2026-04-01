@@ -54,11 +54,11 @@ const HomePage = () => {
       />
 
       {/* Hero Section */}
-      <section className="bg-white relative overflow-hidden" data-testid="hero-section">
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12">
-          <div className="grid md:grid-cols-2 items-center min-h-[80vh] py-12">
-            {/* Left: Text */}
-            <div className="relative z-10 max-w-xl">
+      <section className="relative overflow-hidden min-h-[80vh]" data-testid="hero-section" style={{ backgroundImage: 'url(https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/4ttg770b_banner.png)', backgroundSize: 'cover', backgroundPosition: 'center right' }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent"></div>
+        <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
+          <div className="flex items-center min-h-[80vh] py-12">
+            <div className="max-w-xl">
               <p className="text-sm text-[#7A8B69] mb-3 tracking-wide">Get 15% Discount on First Order!</p>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight leading-[1.1] mb-6">
                 Rebuild Your Skin & Glow <em className="italic">From Within</em>
@@ -69,14 +69,6 @@ const HomePage = () => {
               <Link to="/collections/all" className="inline-block bg-[#292524] text-white px-8 py-3 text-sm uppercase tracking-widest hover:bg-stone-700 transition-colors" data-testid="shop-system-btn">
                 Shop Now
               </Link>
-            </div>
-            {/* Right: Product image flowing naturally */}
-            <div className="relative h-full flex items-center justify-end">
-              <img 
-                src="https://customer-assets.emergentagent.com/job_353edef3-15d8-4d48-bf7c-cdbd5d3423b8/artifacts/9z492qjg_banner.png" 
-                alt="The Polished Glow System - Complete Collection" 
-                className="w-full max-w-[650px] object-contain drop-shadow-lg" 
-              />
             </div>
           </div>
         </div>
